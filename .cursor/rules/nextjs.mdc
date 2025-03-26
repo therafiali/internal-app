@@ -1,0 +1,60 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+- You can @ files here
+- You can use markdown but dont have to
+
+
+# Next.js (React, TypeScript)
+
+# Next.js (React, TypeScript) Development Guide
+
+## Key Principles
+- **Concise, Technical Responses**: Provide accurate TypeScript examples.
+- **Functional, Declarative Programming**: Avoid classes; prefer functional components.
+- **Iteration and Modularization**: Avoid code duplication.
+- **Descriptive Variable Names**: Use auxiliary verbs (e.g., `isLoading`).
+- **Directory Naming**: Use lowercase with dashes (e.g., `components/auth-wizard`).
+- **Named Exports**: Prefer named exports for components.
+- **RORO Pattern**: Receive an Object, Return an Object.
+
+## JavaScript/TypeScript
+- **Function Keyword**: Use `function` for pure functions; omit semicolons.
+- **TypeScript**: Prefer interfaces over types; avoid enums, use maps.
+- **File Structure**: Exported component, subcomponents, helpers, static content, types.
+- **Conditional Statements**: Avoid unnecessary curly braces; use concise syntax.
+
+## Error Handling and Validation
+- **Prioritize Error Handling**: Handle errors and edge cases at the beginning of functions.
+- **Early Returns**: Use for error conditions to avoid deeply nested if statements.
+- **Happy Path Last**: Place the happy path last in the function for readability.
+- **Guard Clauses**: Handle preconditions and invalid states early.
+- **Error Logging**: Implement proper error logging and user-friendly error messages.
+- **Custom Error Types**: Consider using custom error types or error factories.
+
+## React/Next.js
+- **Functional Components**: Use TypeScript interfaces.
+- **Declarative JSX**: Use function, not const, for components.
+- **UI Libraries**: Use Shadcn UI, Radix, and Tailwind Aria for components and styling.
+- **Responsive Design**: Implement with Tailwind CSS; use mobile-first approach.
+- **Static Content**: Place at file end; use content variables outside render functions.
+- **Minimize Hooks**: Minimize `use client`, `useEffect`, and `setState`; favor RSC.
+- **Form Validation**: Use Zod.
+- **Suspense**: Wrap client components in Suspense with fallback.
+- **Dynamic Loading**: Use for non-critical components.
+- **Image Optimization**: Use WebP format, size data, lazy loading.
+- **Error Boundaries**: Implement using `error.tsx` and `global-error.tsx`.
+- **useActionState**: Use with `react-hook-form` for form validation.
+- **Server Actions**: Use `next-safe-action` for type-safe server actions with Zod validation.
+
+## Key Conventions
+1. **Next.js App Router**: Rely on for state changes.
+2. **Web Vitals**: Prioritize LCP, CLS, FID.
+3. **Minimize `use client`**: Prefer server components and Next.js SSR features.
+
+For more details, refer to the [Next.js Documentation](https://nextjs.org/docs).

@@ -1,0 +1,101 @@
+EmployeeCode,Name,Department,SubDepartment
+10291,Usama Khan,Audit,Agent
+10285,Muhammad Subhan Aamir,Audit,Agent
+10282,Syed Hadi Abbas Rizvi,Audit,Agent
+10281,Ehtisham Anjum,Audit,Agent
+10267,Zaid Naeem,Audit,Agent
+10229,Abdul Momin,Audit,Agent
+,,,
+,,,
+10075,Muhammad Harees Soomro,Finance,Agent
+10068,Khubaib najeeb,Finance,Agent
+10054,Mirza Rohaan Ashraf,Finance,Agent
+10039,Assad Akbar Ali,Finance,Agent
+,,,
+,,,
+10025,Syed Muhammad Haider Rizvi,Finance,Agent
+10088,Zubair Shoukat,Finance,Agent
+10073,Muhammad Saad,Finance,Agent
+,,,
+10242,Amaanullah Haroon,Operations,Agent
+10284,Faseeh Ur Rehman,Operations,Agent
+10283,Fahad Saeed,Operations,Agent
+10319,Hamza Shahid Bukhari,Operations,Agent
+10309,Muhammad Owais Jalis,Operations,Agent
+10308,Aslam Shah,Operations,Agent
+10175,Ikram Ul Haq,Operations,Agent
+10217,Mirza Junaid Baig,Operations,Agent
+10232,Muhammad Jawaid,Operations,Agent
+10294,Shanil Haris,Operations,Agent
+10239,Hamza Latif Khan,Operations,Agent
+10296,Waqas Bhatti,Operations,Agent
+10323,Umar Lateef Khan,Operations,Agent
+10280,Arham Shah,Operations,Agent
+,,,
+10326,Kenneth Sajjad,Support,Agent
+10316,Muhammad Salim,Support,Agent
+10289,Faaiz Khan,Support,Agent
+10278,Ali Muhammad,Support,Agent
+10265,Abdul Mannan,Support,Agent
+10250,Ammar Ali,Support,Agent
+10206,Muhammad Bilal Khan,Support,Agent
+10201,Robinson Pervaiz,Support,Agent
+10195,Ahmed Shayan,Support,Agent
+10181,Muhammad Suleman,Support,Agent
+10123,Muhammad Azmeer,Support,Agent
+10098,Wasif Ali Unar,Support,Agent
+10158,Nasit Bukhari,Support,Agent
+10315,Ivan Daniel,Support,Agent
+10310,Muhammad Ahmed Ali Qadri,Support,Agent
+10307,Aneeb Rajput,Support,Agent
+10304,Muhammad Sajid,Support,Agent
+10302,Sohaib Asjad,Support,Agent
+10301,Muhammad Abdul Rehman,Support,Agent
+10300,Ahsan Riaz,Support,Agent
+10299,Ghous Muhammad Jawed,Support,Agent
+10231,Daryl Johnson,Support,Agent
+10227,Abdul Rehman Tunio,Support,Agent
+10210,Abdul Hadi,Support,Agent
+10187,Sameer Soomro,Support,Agent
+10180,Syed Muhammad Nafay Ali,Support,Agent
+10116,Shahzaman Ismail Chhajro,Support,Agent
+10150,Hassan,Support,Agent
+10117,Syed Muhammad Zain Raza,Support,Agent
+10141,Syed Sajjad Raza Rizvi,Support,Agent
+10154,Arham Suhail,Support,Agent
+10064,Syed Own Raza Rizvi,Support,Agent
+10223,Huzaifa Ahmed Shaikh,Support,Agent
+10327,Ali Ahsan,Support,Agent
+10321,Unaiz Ali,Support,Agent
+10317,Julius javed,Support,Agent
+10314,Muhammad Anas,Support,Agent
+10313,Sherwin Derick,Support,Agent
+10312,Ateeb Mehmood,Support,Agent
+10297,Muhammad Mujtaba,Support,Agent
+10252,Ali Asghar Shah,Support,Agent
+10234,Asfandyar Khan,Support,Agent
+10188,Syed Muhammad Abdullah,Support,Agent
+10169,Muhammad Hasan Shahid,Support,Agent
+10052,Syed Muhammad Safiullah,Support,Agent
+10099,Shayan Mustafa,Support,Agent
+10108,Syed Ali Asghar,Support,Agent
+10073,Muhammad Saad,Support,Agent
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+10293,Muhammad Noman Aslam,Verification,Agent
+10259,Bashaar Ubaid,Verification,Agent
+10253,Faraz Gul,Verification,Agent
+10193,Huzaifa Younus,Verification,Agent
+10114,Muhammad Aashir Hasan,Verification,Agent
+10026,Syed Muhammad Sheroz Akhtar Alvi,Verification,Agent
+,,,
+10272,Muhammad Kaif Khan,Procurement,Agent
+10269,Daniyal Shaikh,Procurement,Agent
+10196,Muhammad Sameer Abbasi,Procurement,Agent

@@ -1,0 +1,54 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+
+# TypeScript (Next.js, React, Tailwind, Supabase)
+
+# TypeScript Full-Stack Development Guide
+
+## Overview
+This guide provides a detailed approach to building full-stack applications using TypeScript, Next.js, React, Tailwind CSS, and Supabase. It covers coding standards, preferred libraries, file structure, performance optimization, testing requirements, documentation, and error handling.
+
+## Coding Standards
+- **Functional Components and Hooks**: Prefer functional components and hooks over class components.
+- **Variable Declaration**: Use `const` over `let` for variable declarations.
+- **Naming Conventions**: Use `camelCase` for variables and functions, and `PascalCase` for component names.
+
+## Preferred Libraries
+- **Next.js**: For navigation and server-side rendering.
+- **Tailwind CSS**: For responsive design.
+- **Shadcn/UI**: As the UI component library.
+- **Supabase**: For backend services and database management.
+
+## File Structure
+- **src/components**: Reusable UI components.
+- **src/app/[locale]**: Next.js pages supporting multiple languages.
+- **src/app/api**: API service functions.
+- **src/lib**: Utility functions.
+- **data**: JSON and Markdown files for content management.
+- **public**: Static resources.
+- **styles**: Tailwind CSS configuration and global styles.
+
+## Performance Optimization
+- **React.memo**: Use on pure function components.
+- **Lazy Loading**: Implement for routing components.
+- **useEffect Dependencies**: Optimize to prevent unnecessary re-renders.
+
+## Testing Requirements
+- **Jest and React Testing Library**: For unit tests.
+- **Test Coverage**: Aim for at least 80%.
+- **Snapshot Testing**: For UI components.
+
+## Documentation
+- **JSDoc**: For function and component comments.
+- **PropTypes**: Validation for components.
+- **README.md**: Each main directory should contain one, available in both English and Chinese.
+
+## Error Handling
+- **try/catch**: For asynchronous operations.
+- **Global Error Boundary**: Implement a global error boundary component.
+
+This setup ensures a robust, maintainable, and scalable full-stack application leveraging the latest technologies and best practices.

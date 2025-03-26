@@ -1,0 +1,65 @@
+-- Create a function to handle recharge request transactions
+CREATE OR REPLACE FUNCTION handle_recharge_request_transaction()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Insert a new transaction record
+    INSERT INTO transactions (
+        recharge_id,
+        messenger_id,
+        page_id,
+        current_status,
+        payment_status,
+        amount,
+        bonus_amount,
+        credits_loaded,
+        game_platform,
+        game_username,
+        team_code,
+        promotion,
+        payment_method,
+        action_by,
+        created_at,
+        updated_at
+    ) VALUES (
+        NEW.id::text,  -- Convert UUID to text for recharge_id
+        NEW.messenger_id,
+        NEW.page_id,
+        NEW.status::transaction_status,
+        'pending'::payment_status,
+        NEW.amount,
+        NEW.bonus_amount,
+        NEW.credits_loaded,
+        NEW.game_platform,
+        NEW.game_username,
+        NEW.team_code,
+        CASE 
+            WHEN NEW.promotion IS NOT NULL THEN 
+                jsonb_build_object(
+                    'code', NEW.promotion,
+                    'type', NULL
+                )
+            ELSE NULL
+        END,
+        NEW.payment_method,
+        (SELECT id FROM users WHERE name = NEW.agent_name LIMIT 1),
+        NOW(),
+        NOW()
+    );
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create a trigger to automatically create a transaction when a recharge request is created
+CREATE TRIGGER create_recharge_transaction
+    AFTER INSERT ON recharge_requests
+    FOR EACH ROW
+    EXECUTE FUNCTION handle_recharge_request_transaction();
+
+-- Add a rollback function in case we need to revert
+CREATE OR REPLACE FUNCTION remove_recharge_request_transaction()
+RETURNS void AS $$
+BEGIN
+    DROP TRIGGER IF EXISTS create_recharge_transaction ON recharge_requests;
+    DROP FUNCTION IF EXISTS handle_recharge_request_transaction();
+END;
+$$ LANGUAGE plpgsql;
