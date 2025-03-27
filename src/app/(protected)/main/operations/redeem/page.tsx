@@ -660,6 +660,20 @@ const OperationsRedeemPage = () => {
           console.error("Error processing disputed request:", error);
           throw error;
         }
+        const { error : transactionError } = await supabase
+        .from("transactions")
+        .update({
+          current_status: "return",
+          notes: notes.trim() || null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("recharge_id", selectedRequest.recharge_id);
+
+      if (error) {
+        console.error("Error processing disputed request:", error);
+        throw error;
+      }
+
       } else {
         // Handle redeem request
         const amountToUpdate =
