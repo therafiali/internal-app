@@ -312,7 +312,7 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
                     <div className="flex justify-between items-center py-2 border-b border-gray-800">
                       <span className="text-gray-400">Promotion</span>
                       <Badge variant="outline" className="bg-yellow-500/10 text-yellow-400 border-yellow-500/20">
-                        {rechargeRequest.promotion}
+                        {JSON.parse(rechargeRequest.promotion).code}
                       </Badge>
                     </div>
                   )}
