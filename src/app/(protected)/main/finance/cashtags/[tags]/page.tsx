@@ -366,12 +366,12 @@ export default function CashtagPage({ params }: PageProps) {
                     <div className="relative overflow-hidden bg-[#151C2F] p-6 rounded-2xl border border-gray-800/50 hover:border-gray-700/50 transition-all duration-300 group">
                         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <h3 className="text-sm font-medium text-gray-400 mb-2">RECEIVED</h3>
-                        <p className="text-2xl font-bold text-emerald-400">${tagData?.total_received?.toLocaleString() || '0.00'}</p>
+                            <p className="text-2xl font-bold text-emerald-400">${paginatedLogs.filter(log => log.action_type.includes('RECEIVED')).reduce((acc, log) => acc + Number(log.amount), 0).toLocaleString()}</p>
                     </div>
                     <div className="relative overflow-hidden bg-[#151C2F] p-6 rounded-2xl border border-gray-800/50 hover:border-gray-700/50 transition-all duration-300 group">
                         <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         <h3 className="text-sm font-medium text-gray-400 mb-2">SENT</h3>
-                        <p className="text-2xl font-bold text-amber-400">${tagData?.total_withdrawn?.toLocaleString() || '0.00'}</p>
+                        <p className="text-2xl font-bold text-amber-400">${paginatedLogs.filter(log => log.action_type.includes('SENT')).reduce((acc, log) => acc + Number(log.amount), 0).toLocaleString()}</p>
                     </div>
                 </div>
 
@@ -565,7 +565,7 @@ export default function CashtagPage({ params }: PageProps) {
                                                      })}
                                                  </span>
                                                 )
-                                                : log.action_type.includes('CT_WITHDRAW') ? (
+                                                : log.action_type.includes('WITHDRAW') ? (
                                                     <span className={Number(log.amount) >= 0 ? 'text-green-400' : 'text-red-400'}>
                                                         {Number(log.amount) >= 0 ? '-' : ''}{log.amount.toLocaleString('en-US', {
                                                             style: 'currency',
@@ -573,7 +573,7 @@ export default function CashtagPage({ params }: PageProps) {
                                                         })}
                                                     </span>
                                                 )
-                                                : log.action_type.includes('CT_SENT') || log.action_type.includes('CT_TRANSFER') ? (
+                                                : log.action_type.includes('SENT') || log.action_type.includes('TRANSFER') ? (
                                                     <span className={Number(log.amount) >= 0 ? 'text-yellow-400' : 'text-red-400'}>
                                                         {Number(log.amount) >= 0 ? '-' : ''}{log.amount.toLocaleString('en-US', {
                                                             style: 'currency',
