@@ -25,6 +25,7 @@ interface TransactionDetailsModalProps {
     gamePlatform: string;
     gameUsername: string;
     amount: number;
+    credits_loaded: number;
     bonusAmount: number;
     status: string;
     deposit_status?: string;
@@ -215,8 +216,8 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
                 <DollarSign size={24} />
               </div>
               <div>
-                <p className="text-sm text-gray-400">Total Amount</p>
-                <p className="text-2xl font-bold">${rechargeRequest.amount}</p>
+                <p className="text-sm text-gray-400">Total Amount (With Promo)</p>
+                <p className="text-2xl font-bold">${rechargeRequest.credits_loaded}</p>
               </div>
             </div>
             <div className="h-12 w-px bg-gray-800"></div>

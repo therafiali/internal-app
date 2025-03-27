@@ -591,6 +591,7 @@ const TransactionPage = () => {
             amount: transaction.amount,
             bonusAmount: transaction.bonus_amount || 0,
             status: transaction.current_status,
+            credits_loaded: transaction.credits_loaded || 0,
             deposit_status: transaction.deposit_status || undefined,
             screenshotUrl: transaction.screenshot_url || undefined,
             teamCode: transaction.team_code,
