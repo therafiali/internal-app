@@ -9,6 +9,9 @@ import { createClient } from '@supabase/supabase-js';
 import { X } from 'lucide-react';
 import { convertEntFormat } from '@/utils/entFormat';
 import { EntType } from '@/supabase/types';
+import { setBotFields } from "@/app/services/manychat_set_fields";
+import { sendFlow } from "@/app/services/manychat_send_flow";
+import { MANYCHAT_FLOWS } from "@/app/services/manychat_config";
 
 // Define User interface with ENT access
 interface User {
@@ -492,12 +495,28 @@ const NewPlayersPage = () => {
 
         // Send approval message via ManyChat with team code
         try {
+
+          await setBotFields(
+            currentPlayer.manychat_data.id,
+            [{
+              field_name: "entry_valid",
+              field_value: true
+            }],
+            currentPlayer.manychat_data.custom_fields.team_code
+          )
           await sendManyChatMessage(
             currentPlayer.manychat_data.id,
             "Congratulations! Your registration has been approved. Welcome to our gaming community! 🎮",
             undefined,
             currentPlayer.manychat_data.custom_fields.team_code
           );
+
+          await sendFlow(
+            currentPlayer.manychat_data.id,
+            'WELCOME_FLOW',
+            currentPlayer.manychat_data.custom_fields.team_code
+          ) 
+
         } catch (manyChatError) {
           console.error('Error sending ManyChat message:', manyChatError);
           setNotification({
