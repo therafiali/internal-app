@@ -570,13 +570,13 @@ const ProcessPaymentModal = ({
 
                 <div className="space-y-2">
                   <label className="text-sm text-gray-400">
-                    Enter Amount to Hold
+                    Enter Amount to Hold (Max: ${request.amount_available})
                   </label>
                   <input
                     type="number"
                     className={`w-full bg-[#252b3b] border ${
                       totalAmount > request.amount_hold || totalAmount <= 0
-                        ? "border-red-500 focus:border-red-500"
+                        ? ""
                         : "border-gray-800 focus:border-blue-500"
                     } rounded-lg px-4 py-2 text-white focus:outline-none`}
                     value={totalAmount || ''}
@@ -595,16 +595,7 @@ const ProcessPaymentModal = ({
                     step="0.01"
                     placeholder="Enter amount to process"
                   />
-                 {  !totalAmount || totalAmount <= 0 || totalAmount > request.amount_available && (
-                    <p className="text-xs text-yellow-500">
-                      Amount cannot exceed the held amount of ${request.amount_available}
-                    </p>
-                  )}
-                  {/* {!totalAmount || totalAmount <= 0  && (
-                    <p className="text-xs text-red-500">
-                      Amount cannot be less than $1 
-                    </p>
-                  )} */}
+                 
                 </div>
               </>
             ) : (
