@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import {
@@ -262,6 +262,7 @@ const ResolveModal: React.FC<ResolveModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  // 
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -630,161 +631,7 @@ const ResolveModal: React.FC<ResolveModalProps> = ({
   );
 };
 
-const RejectModal: React.FC<RejectModalProps> = ({
-  request,
-  isOpen,
-  onClose,
-}) => {
-  const [confirmText, setConfirmText] = useState("");
-  const [remarks, setRemarks] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
-  }, []);
-
-  // Add validation for ENT access
-  const validateEntAccess = (request: RechargeRequest | null) => {
-    if (!request || !user?.ent_access) return false;
-    const teamCode = request.team_code || request.teamCode || "";
-    if (!teamCode) return false;
-    return convertEntFormat.hasEntAccess(user, teamCode);
-  };
-
-  const handleSubmit = async () => {
-    if (!request || !user) return;
-
-    // Validate ENT access before proceeding
-    if (!validateEntAccess(request)) {
-      setError("You do not have access to reject requests for this ENT");
-      return;
-    }
-
-    try {
-      setIsSubmitting(true);
-
-      // Update recharge request status to rejected
-      const { error: rechargeError } = await supabase
-        .from("recharge_requests")
-        .update({
-          status: "rejected",
-          processed_by: user.id,
-          processed_at: new Date().toISOString(),
-          notes: remarks, // Add remarks to notes field
-        })
-        .eq("id", request.id);
-
-      if (rechargeError) throw rechargeError;
-
-      // Update player status to banned in players table
-      const { error: playerError } = await supabase
-        .from("players")
-        .update({
-          status: "banned",
-        })
-        .eq("messenger_id", request.messenger_id);
-
-      if (playerError) throw playerError;
-
-      onClose();
-      window.location.reload(); // Refresh the page to update the data
-    } catch (error) {
-      console.error("Error rejecting dispute:", error);
-      alert("Failed to reject dispute. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  if (!isOpen || !request) return null;
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[#1a1a1a] rounded-2xl p-6 w-[500px]">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white">Ban Player</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <div className="space-y-4">
-          <p className="text-red-500">
-            Warning: This action will ban the player and cannot be undone.
-          </p>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Remarks
-            </label>
-            <textarea
-              value={remarks}
-              onChange={(e) => setRemarks(e.target.value)}
-              className="w-full px-3 py-2 bg-[#2a2a2a] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 h-32 resize-none mb-4"
-              placeholder="Enter remarks for banning the player..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">
-              Type "process" to confirm
-            </label>
-            <input
-              type="text"
-              value={confirmText}
-              onChange={(e) => setConfirmText(e.target.value)}
-              className="w-full px-3 py-2 bg-[#2a2a2a] text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Type 'process' to confirm"
-            />
-          </div>
-        </div>
-
-        <div className="mt-6 flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            disabled={confirmText !== "process" || isSubmitting}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              confirmText !== "process" || isSubmitting
-                ? "bg-red-500/50 text-white cursor-not-allowed"
-                : "bg-red-500 text-white hover:bg-red-600"
-            }`}
-          >
-            {isSubmitting ? "Processing..." : "Ban Player"}
-          </button>
-        </div>
-
-        {error && (
-          <div className="mb-4 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
-            <p className="text-red-500">{error}</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+ 
 
 type TabType = "Pending" | "Resolved" | "Rejected";
 type TicketType = "PT" | "CT";
@@ -793,7 +640,7 @@ const DisputePage = () => {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>("Pending");
-  const [activeTicketType, setActiveTicketType] = useState<TicketType>("CT");
+  const [activeTicketType, setActiveTicketType] = useState<TicketType>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [rechargeRequests, setRechargeRequests] = useState<RechargeRequest[]>(
     []
@@ -810,6 +657,15 @@ const DisputePage = () => {
   const [isResolveModalOpen, setIsResolveModalOpen] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const ctButtonRef = useRef<HTMLButtonElement>(null);
+  // run action after 1 second
+  useEffect(() => {
+     
+      setTimeout(() => {
+        // console.log("clicked");
+        ctButtonRef.current?.click();
+      }, 1000); 
+  }, []);
 
   // Setup realtime subscriptions
   useEffect(() => {
@@ -1043,7 +899,7 @@ const DisputePage = () => {
     const filteredRequests = rechargeRequests.filter((request) => {
       if (activeTicketType === "PT") {
         return request.assigned_redeem !== null;
-      } else {
+      } else  {
         return request.assigned_redeem === null;
       }
     });
@@ -1291,6 +1147,7 @@ const DisputePage = () => {
           {/* Ticket Type Tabs */}
           <div className="flex space-x-4 mb-8">
             <button
+              ref={ctButtonRef}
               onClick={() => setActiveTicketType("CT")}
               className={`px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                 activeTicketType === "CT"
