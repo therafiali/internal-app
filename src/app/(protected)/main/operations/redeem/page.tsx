@@ -905,11 +905,11 @@ const OperationsRedeemPage = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center space-x-3">
                       <div className="flex-shrink-0 h-8 w-8">
-                        <Image
+                        {/* <Image
                           className="h-8 w-8 rounded-full object-cover border border-gray-700"
                           src={
                             request.player_data?.profile?.profilePic ||
-                            `https://ui-avatars.com/api/?name=${request?.player_name}`
+                              '/default-avatar.svg'
                           }
                           alt={`${request?.player_name}'s profile`}
                           width={32}
@@ -919,7 +919,7 @@ const OperationsRedeemPage = () => {
                             target.src =
                               "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
                           }}
-                        />
+                        /> */}
                       </div>
                       <div>
                         <div className="text-sm font-medium text-white">
@@ -1014,11 +1014,11 @@ const OperationsRedeemPage = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center space-x-3">
                       <div className="flex-shrink-0 h-8 w-8">
-                        <Image
+                        {/* <Image
                           className="h-8 w-8 rounded-full object-cover border border-gray-700"
                           src={
                             request.manychat_data?.profile?.profilePic ||
-                            `https://ui-avatars.com/api/?name=${request?.player_name}`
+                            `https://ui-avatars.com/api/?name=${'N-A'}`
                           }
                           alt={`${request?.player_name}'s profile`}
                           width={32}
@@ -1028,7 +1028,7 @@ const OperationsRedeemPage = () => {
                             target.src =
                               "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
                           }}
-                        />
+                        /> */}
                       </div>
                       <div>
                         <div className="text-sm font-medium text-white">
@@ -1116,16 +1116,16 @@ const OperationsRedeemPage = () => {
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     <div className="flex items-center gap-3">
-                      <Image
+                      {/* <Image
                         src={
                           request.manychat_data.profile?.profilePic ||
-                          `https://ui-avatars.com/api/?name=${request.player_name}`
+                         `https://ui-avatars.com/api/?name=${'N-A'}`
                         }
                         alt={request.player_name || "User"}
                         width={32}
                         height={32}
                         className="rounded-full"
-                      />
+                      /> */}
                       <span className="ml-3 text-sm text-gray-300">
                         {request.player_name || "Unknown User"}
                       </span>
@@ -1213,16 +1213,16 @@ const OperationsRedeemPage = () => {
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
                     <div className="flex items-center gap-3">
-                      <Image
+                      {/* <Image
                         src={
                           request.manychat_data.profile?.profilePic ||
-                          `https://ui-avatars.com/api/?name=${request.player_name}`
+                         `https://ui-avatars.com/api/?name=${'N-A'}`
                         }
                         alt={request.player_name || "User"}
                         width={32}
                         height={32}
                         className="rounded-full"
-                      />
+                      /> */}
                       <span className="ml-3 text-sm text-gray-300">
                         {request.player_name || "Unknown User"}
                       </span>

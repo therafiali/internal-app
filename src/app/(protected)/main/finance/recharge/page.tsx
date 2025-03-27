@@ -1519,7 +1519,7 @@ const QueueDashboard = () => {
                                     <img
                                       src={
                                         deposit.profile_pic ||
-                                        `https://ui-avatars.com/api/?name=${deposit.player_name}`
+                                        `https://ui-avatars.com/api/?name=${deposit.player_name || 'User'}`
                                       }
                                       alt={deposit.player_name}
                                       className="w-full h-full object-cover"
@@ -2086,7 +2086,7 @@ const QueueDashboard = () => {
                                     <img
                                       src={
                                         deposit.profile_pic ||
-                                        `https://ui-avatars.com/api/?name=${deposit.player_name}`
+                                        `https://ui-avatars.com/api/?name=${deposit.player_name || 'User'}`
                                       }
                                       alt={deposit.player_name}
                                       className="w-full h-full object-cover"
@@ -2371,7 +2371,7 @@ const QueueDashboard = () => {
                                         <img
                                           src={
                                             deposit.profile_pic ||
-                                            `https://ui-avatars.com/api/?name=${deposit.player_name}`
+                                            `https://ui-avatars.com/api/?name=${deposit.player_name || 'User'}`
                                           }
                                           alt={deposit.player_name}
                                           className="w-full h-full object-cover"

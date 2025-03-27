@@ -1,10 +1,12 @@
 ﻿/** @type {import('next').NextConfig} */
 const nextConfig = {
+   
   images: {
+    dangerouslyAllowSVG: true,
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'app.manychat.com',
+        hostname: 'app.manychat.com',contentdispositiontype: 'inline', // Optional: Adjust content disposition
       },
       {
         protocol: 'https',

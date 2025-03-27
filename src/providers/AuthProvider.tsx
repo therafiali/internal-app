@@ -50,10 +50,10 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         clearAuthState();
         if (!PUBLIC_ROUTES.includes(pathname) && !isRedirecting) {
           isRedirecting = true;
-          router.push('/login');
+          // router.push('/login');
         }
       } else if (!PUBLIC_ROUTES.includes(pathname)) {
-        checkAuthentication();
+        // checkAuthentication();
       }
     });
 
@@ -69,7 +69,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const { user } = getAuthState();
 
       if (!isAuthenticated && !isPublicRoute) {
-        router.push('/login');
+        // router.push('/login');
       } else if (isAuthenticated && pathname === '/login' && user) {
         // Only redirect if explicitly on login page
         // Redirect based on user's department

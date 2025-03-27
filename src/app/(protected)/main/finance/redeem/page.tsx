@@ -858,11 +858,11 @@ const FinanceRedeemPage = () => {
               );
             } catch (error) {
               console.error("Error processing payment:", error);
-              setAlertModal({
-                isOpen: true,
-                type: "error",
-                message: "Failed to process payment",
-              });
+              // setAlertModal({
+              //   isOpen: true,
+              //   type: "error",
+              //   message: "Failed to process payment",
+              // });
             } finally {
               setLoadingAction(null);
             }
@@ -1276,7 +1276,7 @@ const FinanceRedeemPage = () => {
                               <Image
                                 src={
                                   request.player_data?.profile?.profilePic ||
-                                  `https://ui-avatars.com/api/?name=${request.player_name}`
+                                  `https://ui-avatars.com/api/?name=${request.player_name || 'User'}`
                                 }
                                 alt={request.player_name}
                                 width={32}
@@ -1351,7 +1351,7 @@ const FinanceRedeemPage = () => {
                               )}
                             </div>
                           </td>
-                          {request.total_amount === request.amount_hold && (
+                          {request.total_amount === request.amount_hold  || request.total_amount === request.amount_paid    && (
                             <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
                               <button className="px-3 py-1 rounded-lg bg-gray-800 hover:bg-gray-700">
                                 HOLD
@@ -1359,7 +1359,7 @@ const FinanceRedeemPage = () => {
                             </td>
                           )}
                           {activeTab !== "Completed" &&
-                            request.total_amount !== request.amount_hold && (
+                            request.total_amount !== request.amount_hold  && (
                               <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
                                 {renderActionButtons(request)}
                               </td>

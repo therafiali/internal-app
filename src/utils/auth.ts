@@ -135,12 +135,12 @@ export const handleLogout = async () => {
 export const cleanupStorage = () => {
   try {
     // Clear old Supabase tokens if they exist
-    const keys = Object.keys(localStorage);
-    keys.forEach(key => {
-      if (key.startsWith('sb-') && key !== `sb-${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF}-auth-token`) {
-        localStorage.removeItem(key);
-      }
-    });
+    // const keys = Object.keys(localStorage);
+    // keys.forEach(key => {
+    //   if (key.startsWith('sb-') && key !== `sb-${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_REF}-auth-token`) {
+    //   // localStorage.removeItem(key);
+    //   }
+    // });
   } catch (error) {
     console.error('Error cleaning up storage:', error);
   }
