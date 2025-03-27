@@ -1237,27 +1237,33 @@ const FinanceRedeemPage = () => {
                       {redeemRequests.map((request, index) => (
                         <tr
                           key={index}
-                          className="hover:bg-[#252b3b] cursor-pointer"
-                          onClick={() => {
-                            setSelectedRequest(request);
-                            setShowHoldDetailsModal(true);
-                          }}
+                          className="hover:bg-[#252b3b]"
                         >
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
-                            <AgentImage
-                              id={request.processed_by || ""}
-                              width={32}
-                              height={32}
-                            />
+                          <td 
+                            className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
+                            onClick={() => {
+                              setSelectedRequest(request);
+                              setShowHoldDetailsModal(true);
+                            }}
+                          >
+                          Agent
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
-                            <AgentImage
-                              id={request.verified_id || ""}
-                              width={32}
-                              height={32}
-                            />
+                          <td 
+                            className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
+                            onClick={() => {
+                              setSelectedRequest(request);
+                              setShowHoldDetailsModal(true);
+                            }}
+                          >
+                           Agent
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-center">
+                          <td 
+                            className="px-4 py-3 whitespace-nowrap text-center cursor-pointer"
+                            onClick={() => {
+                              setSelectedRequest(request);
+                              setShowHoldDetailsModal(true);
+                            }}
+                          >
                             {request.created_at && (
                               <TimeElapsed
                                 date={request.created_at}
@@ -1268,15 +1274,27 @@ const FinanceRedeemPage = () => {
                             )}
                           </td>
 
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
+                          <td 
+                            className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
+                            onClick={() => {
+                              setSelectedRequest(request);
+                              setShowHoldDetailsModal(true);
+                            }}
+                          >
                             {request.redeem_id}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
+                          <td 
+                            className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
+                            onClick={() => {
+                              setSelectedRequest(request);
+                              setShowHoldDetailsModal(true);
+                            }}
+                          >
                             <div className="flex items-center gap-2">
                               <Image
                                 src={
                                   request.player_data?.profile?.profilePic ||
-                                  `https://ui-avatars.com/api/?name=${request.player_name || 'User'}`
+                                  `https://ui-avatars.com/api/?name=${request.player_name}`
                                 }
                                 alt={request.player_name}
                                 width={32}
@@ -1293,22 +1311,46 @@ const FinanceRedeemPage = () => {
                               </div>
                             </div>
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
+                          <td 
+                            className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
+                            onClick={() => {
+                              setSelectedRequest(request);
+                              setShowHoldDetailsModal(true);
+                            }}
+                          >
                             <span className="text-sm font-medium text-white-500">
                               ${(request.total_amount || 0).toFixed(2)}
                             </span>
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
+                          <td 
+                            className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
+                            onClick={() => {
+                              setSelectedRequest(request);
+                              setShowHoldDetailsModal(true);
+                            }}
+                          >
                             <span className="text-sm font-medium text-white-500">
                               ${(request.amount_paid || 0).toFixed(2)}
                             </span>
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
+                          <td 
+                            className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
+                            onClick={() => {
+                              setSelectedRequest(request);
+                              setShowHoldDetailsModal(true);
+                            }}
+                          >
                             <span className="text-sm font-medium text-white-500">
                               ${(request.amount_hold || 0).toFixed(2)}
                             </span>
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
+                          <td 
+                            className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
+                            onClick={() => {
+                              setSelectedRequest(request);
+                              setShowHoldDetailsModal(true);
+                            }}
+                          >
                             <span className="text-sm font-medium text-white-500">
                               $
                               {(
@@ -1317,12 +1359,24 @@ const FinanceRedeemPage = () => {
                               ).toFixed(2)}
                             </span>
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
+                          <td 
+                            className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
+                            onClick={() => {
+                              setSelectedRequest(request);
+                              setShowHoldDetailsModal(true);
+                            }}
+                          >
                             <span className="text-sm font-medium text-white-500">
                               ${(request.amount_available || 0).toFixed(2)}
                             </span>
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center mx-auto  ">
+                          <td 
+                            className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
+                            onClick={() => {
+                              setSelectedRequest(request);
+                              setShowHoldDetailsModal(true);
+                            }}
+                          >
                             <div className="flex items-center gap-2   mx-auto">
                               {request.paymentMethods[0] && (
                                 <div className="relative group mx-auto">
@@ -1351,22 +1405,15 @@ const FinanceRedeemPage = () => {
                               )}
                             </div>
                           </td>
-                          {request.total_amount === request.amount_hold  && (
+                          {request.total_amount === request.amount_hold && (
                             <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
                               <button className="px-3 py-1 rounded-lg bg-gray-800 hover:bg-gray-700">
                                 HOLD
                               </button>
                             </td>
-                          )  }
-                          {request.total_amount === request.amount_paid  && (
-                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
-                              <button className="px-3 py-1 rounded-lg bg-gray-800 hover:bg-gray-700">
-                                PAID
-                              </button>
-                            </td>
-                          )  }
+                          )}
                           {activeTab !== "Completed" &&
-                            request.total_amount !== request.amount_hold  && (
+                            request.total_amount !== request.amount_hold && (
                               <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
                                 {renderActionButtons(request)}
                               </td>

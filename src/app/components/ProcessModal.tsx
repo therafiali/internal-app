@@ -14,6 +14,7 @@ interface ProcessModalProps {
   bonus?: number;
   promotion?: string;
   identifier?: string;
+  credits_loaded?: number;
   playerData: {
     profile: {
       profilePic: string;
@@ -33,6 +34,7 @@ const ProcessModal = ({
   gameUsername,
   platform,
   amount,
+  credits_loaded,
   playerData,
   bonus = 0,
   promotion = '',
@@ -113,6 +115,7 @@ const ProcessModal = ({
                   <div>
                     <label className="text-xs text-gray-400">Amount</label>
                     <div className="text-sm text-white">${amount.toLocaleString()}</div>
+
                   </div>
                   <div>
                     <label className="text-xs text-gray-400">Initiated By</label>

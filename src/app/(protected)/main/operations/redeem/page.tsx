@@ -183,7 +183,7 @@ const OperationsRedeemPage = () => {
     limit,
   });
 
-  console.log("redeem requests", redeemRequests);
+  console.log("redeem requests", disputedRequests);
 
   // Update handleRefresh to refresh both hooks
   const handleRefresh = async () => {
@@ -1134,7 +1134,7 @@ const OperationsRedeemPage = () => {
                   <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
                     $
                     {isDisputedRequest(request)
-                      ? request.amount
+                      ? request.credits_loaded
                       : request.total_amount || 0}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
@@ -1231,7 +1231,7 @@ const OperationsRedeemPage = () => {
                   <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
                     $
                     {isDisputedRequest(request)
-                      ? request.amount
+                      ? request.credits_loaded
                       : request.total_amount || 0}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
@@ -1659,7 +1659,7 @@ const OperationsRedeemPage = () => {
           platform={selectedRequest.game_platform}
           amount={
             isDisputedRequest(selectedRequest)
-              ? selectedRequest.amount
+              ? selectedRequest.credits_loaded
               : selectedRequest.total_amount
           }
           bonus={0}

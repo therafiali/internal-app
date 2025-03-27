@@ -60,6 +60,7 @@ export interface RedeemRequest {
   verified_by: string | null;
   verified_at: string | null;
   verification_remarks: string | null;
+  credits_loaded?: number | null;
   created_at: string;
   updated_at: string;
   processing_state: ProcessingState;

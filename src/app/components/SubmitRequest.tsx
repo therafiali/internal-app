@@ -1033,7 +1033,7 @@ const SubmitRequest = () => {
                     className="hover:bg-[#252b3b]"
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                    <AgentImage id={request.init_id} width={32} height={32} />
+                      <AgentImage id={request.init_id} width={32} height={32} />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
                       {request.updatedAt && (
@@ -1239,6 +1239,49 @@ const SubmitRequest = () => {
                                     .eq("id", request._id);
 
                                   if (error) throw error;
+                                  const { error: transactionError } =
+                                    await supabase
+                                      .from("transactions")
+                                      .update({ current_status: "cancel" })
+                                      .eq("redeem_id", request.redeem_id);
+
+                                  if (transactionError) throw transactionError;
+                                  console.log(
+                                    "request-------",
+                                    request.vipCode
+                                  );
+                                  // Get current player data
+                                  const {
+                                    data: playerData,
+                                    error: playerFetchError,
+                                  } = await supabase
+                                    .from("players")
+                                    .select("game_limits, total_redeemed")
+                                    .eq("vip_code", request.entryCode)
+                                    .single();
+
+                                  if (playerFetchError) throw playerFetchError;
+                                  console.log("playerData", playerData);
+                                  // Update game_limits by removing the matching redeem_id entry
+                                  const updatedGameLimits =
+                                    playerData.game_limits.filter(
+                                      (limit: any) =>
+                                        limit.redeem_id !== request.redeem_id
+                                    );
+
+                                  // Update players table with new game_limits and reduced total_redeemed
+                                  const { error: playerError } = await supabase
+                                    .from("players")
+                                    .update({
+                                      game_limits: updatedGameLimits,
+                                      total_redeemed:
+                                        playerData.total_redeemed -
+                                        request.totalAmount,
+                                    })
+                                    .eq("vip_code", request.entryCode);
+
+                                  if (playerError) throw playerError;
+
                                   // Refresh the redeem requests
                                   const {
                                     data: redeemData,

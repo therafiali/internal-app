@@ -16,6 +16,7 @@ export interface DisputedRequest {
   notes: string | null;
   agent_name: string;
   agent_department: string;
+  credits_loaded: number;
   processed_by: string | null;
   processed_at: string | null;
   created_at: string;
