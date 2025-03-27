@@ -1351,13 +1351,20 @@ const FinanceRedeemPage = () => {
                               )}
                             </div>
                           </td>
-                          {request.total_amount === request.amount_hold  || request.total_amount === request.amount_paid    && (
+                          {request.total_amount === request.amount_hold  && (
                             <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
                               <button className="px-3 py-1 rounded-lg bg-gray-800 hover:bg-gray-700">
                                 HOLD
                               </button>
                             </td>
-                          )}
+                          )  }
+                          {request.total_amount === request.amount_paid  && (
+                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
+                              <button className="px-3 py-1 rounded-lg bg-gray-800 hover:bg-gray-700">
+                                PAID
+                              </button>
+                            </td>
+                          )  }
                           {activeTab !== "Completed" &&
                             request.total_amount !== request.amount_hold  && (
                               <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center">
