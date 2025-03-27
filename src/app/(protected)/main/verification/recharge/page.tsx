@@ -1444,6 +1444,9 @@ const VerificationRechargePage: React.FC = () => {
   const handleRejectSubmit = async () => {
     if (!selectedRequest || !rejectReason || !user) return;
 
+    console.log(  rejectReason, rejectNotes, " reject submit");
+    return;
+
     try {
       setProcessingAction(true);
 
@@ -2355,10 +2358,10 @@ const VerificationRechargePage: React.FC = () => {
                   Screenshot
                 </h3>
                 <div className="relative rounded-lg overflow-hidden">
-                  <ScreenshotFetcher
+                  {/* <ScreenshotFetcher
                     rechargeId={selectedRequest.rechargeId}
                     initialUrl={selectedRequest.screenshotUrl}
-                  />
+                  /> */}
                 </div>
               </div>
 
