@@ -950,8 +950,40 @@ const VerificationRechargePage: React.FC = () => {
       console.log("Fetching recharge requests...");
       const { data: rechargeData, error: rechargeError } = await supabase
         .from("recharge_requests")
-        .select("*")
-        .in("status", ["sc_submitted", "sc_processed", "sc_rejected"])
+        .select(`
+          id,
+          vip_code,
+          team_code,
+          game_platform,
+          game_username,
+          player_name,
+          amount,
+          bonus_amount,
+          credits_loaded,
+          status,
+          processing_state,
+          promo_code,
+          promo_type,
+          payment_method,
+          screenshot_url,
+          notes,
+          manychat_data,
+          agent_name,
+          agent_department,
+          processed_by,
+          processed_at,
+          created_at,
+          updated_at,
+          assigned_redeem,
+          assigned_ct,
+          identifier,
+          recharge_id,
+          assigned_recharge,
+          init_by, 
+          init_id,
+          assigned_id
+  
+        `).in("status", ["sc_submitted", "sc_processed", "sc_rejected"])
         .order("created_at", { ascending: false });
 
       if (rechargeError) {
@@ -1445,7 +1477,7 @@ const VerificationRechargePage: React.FC = () => {
     if (!selectedRequest || !rejectReason || !user) return;
 
     console.log(  rejectReason, rejectNotes, " reject submit");
-    return;
+  
 
     try {
       setProcessingAction(true);
@@ -1455,14 +1487,14 @@ const VerificationRechargePage: React.FC = () => {
         .from("recharge_requests")
         .update({
           status: "sc_rejected",
-          reject_reason: rejectReason,
-          reject_notes: rejectNotes,
-          rejected_by: {
-            id: user.id,
-            name: user.id,
-            email: user.email,
-          },
-          rejected_at: new Date().toISOString(),
+          notes: rejectReason + ', ' + rejectNotes ,
+           
+          // rejected_by: {
+          //   id: user.id,
+          //   name: user.id,
+          //   email: user.email,
+          // },
+          // rejected_at: new Date().toISOString(),
           processing_state: {
             status: "idle",
             processed_by: null,
@@ -1942,7 +1974,7 @@ const VerificationRechargePage: React.FC = () => {
                           <td className="px-4 py-3 whitespace-nowrap">
                             <div className="flex items-center justify-center space-x-3">
                               <div className="flex-shrink-0 h-8 w-8">
-                                <img
+                                {/* <img
                                   className="h-8 w-8 rounded-full object-cover border border-gray-700"
                                   src={
                                     request.profile_pic ||
@@ -1954,7 +1986,7 @@ const VerificationRechargePage: React.FC = () => {
                                     target.src =
                                       "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
                                   }}
-                                />
+                                /> */}
                               </div>
                               <div>
                                 <div className="text-sm font-medium text-white flex flex-col">
@@ -2212,10 +2244,10 @@ const VerificationRechargePage: React.FC = () => {
                     Screenshot
                   </h3>
                   <div className="relative rounded-lg overflow-hidden">
-                    <ScreenshotFetcher
-                      rechargeId={selectedRequest.rechargeId}
-                      initialUrl={selectedRequest.screenshotUrl}
-                    />
+                      <ScreenshotFetcher
+                        rechargeId={selectedRequest.rechargeId}
+                        initialUrl={selectedRequest.screenshotUrl}
+                      />
                   </div>
                 </div>
               </div>
@@ -2358,10 +2390,10 @@ const VerificationRechargePage: React.FC = () => {
                   Screenshot
                 </h3>
                 <div className="relative rounded-lg overflow-hidden">
-                  {/* <ScreenshotFetcher
+                  <ScreenshotFetcher
                     rechargeId={selectedRequest.rechargeId}
                     initialUrl={selectedRequest.screenshotUrl}
-                  /> */}
+                  />
                 </div>
               </div>
 

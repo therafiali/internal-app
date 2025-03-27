@@ -36,7 +36,7 @@ import {
 import { usePlayerRequests } from "@/hooks/usePlayerRequests";
 import { useVerificationRecharge } from "@/hooks/useVerificationRecharge";
 import { useVerificationRedeem } from "@/hooks/useVerificationRedeem";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/supabase/client";
 import { fetchUserProfilePic } from "./getProfile";
 
 // Add the utility function to fetch profile picture
@@ -58,10 +58,8 @@ interface HeaderProps {
     redeem?: number;
     resetPassword?: number;
   };
+  onLogout?: () => void;
 }
-
-
-
 
 interface SupportCounts {
   intercom: number;
@@ -70,16 +68,6 @@ interface SupportCounts {
   transactions: number;
   dispute: number;
 }
-
-const CountBadge = ({ count }: { count: number }) => {
-  if (count <= 0) return null;
-
-  return (
-    <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-red-500 text-white text-xs font-semibold rounded-md">
-      {count}
-    </span>
-  );
-};
 
 export const VerificationHeader = ({ user }: { user: User }) => {
   const pathname = usePathname();
@@ -136,41 +124,6 @@ export const VerificationHeader = ({ user }: { user: User }) => {
 
     // Initial fetch
     fetchCounts();
-
-    // Set up realtime subscriptions with specific filters
-    const rechargeChannel = supabase
-      .channel("verification_recharge_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "recharge_requests",
-      
-        },
-        () => fetchCounts()
-      )
-      .subscribe();
-
-    const redeemChannel = supabase
-      .channel("verification_redeem_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "redeem_requests",
-         
-        },
-        () => fetchCounts()
-      )
-      .subscribe();
-
-    // Cleanup subscriptions
-    return () => {
-      rechargeChannel.unsubscribe();
-      redeemChannel.unsubscribe();
-    };
   }, []);
 
   const navigationItems = useMemo(
@@ -223,23 +176,15 @@ export const VerificationHeader = ({ user }: { user: User }) => {
   return (
     <div className="fixed inset-y-0 left-0 w-64 bg-[#1a1a1a] border-r border-gray-800/20">
       {/* Logo Section */}
-      <div className="h-16 flex items-center px-6 border-b border-gray-800/20">
+      <div className="h-16 flex items-center px-6 border-b border-gray-800/20 py-12">
         <Link
-          href="/main/verification/redeem"
+          href="/main/verification/agent"
           className="text-md font-bold text-white flex items-center gap-2"
         >
-          {profilePic ? (
-            <Image
-              src={profilePic}
-              alt="Profile"
-              width={32}
-              height={32}
-              className="rounded-full"
-            />
-          ) : (
-            <User size={32} className="text-gray-400" />
-          )}
-          <span>{user.name}</span>
+          <Image src="/logo.png" alt="Logo" width={40} height={40} />
+          <span className="text-md font-bold text-white">
+            Techmile Solutions
+          </span>
         </Link>
       </div>
 
@@ -264,12 +209,8 @@ export const VerificationHeader = ({ user }: { user: User }) => {
               {item.icon}
               <span className="font-medium">{item.label}</span>
             </div>
-            {item.href === "/main/verification/recharge" && (
-              <CountBadge count={verificationCounts.recharge} />
-            )}
-            {item.href === "/main/verification/redeem" && (
-              <CountBadge count={verificationCounts.redeem} />
-            )}
+            {item.href === "/main/verification/recharge" && null}
+            {item.href === "/main/verification/redeem" && null}
           </Link>
         ))}
       </nav>
@@ -547,84 +488,6 @@ export const OperationsHeader = ({ user, requestCounts }: HeaderProps) => {
 
     // Initial fetch
     fetchCounts();
-
-    // Set up realtime subscriptions with specific filters
-    const resetPasswordChannel = supabase
-      .channel("operations_reset_password_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "reset_password_requests",
-         
-        },
-        () => fetchCounts()
-      )
-      .subscribe();
-
-    const rechargeChannel = supabase
-      .channel("operations_recharge_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "recharge_requests",
-    
-        },
-        () => fetchCounts()
-      )
-      .subscribe();
-
-    const redeemChannel = supabase
-      .channel("operations_redeem_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "redeem_requests",
-       
-        },
-        () => fetchCounts()
-      )
-      .subscribe();
-    const disputeChannel = supabase
-      .channel("operations_dispute_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "recharge_requests",
-     
-        },
-        () => fetchCounts()
-      )
-      .subscribe();
-    const transferChannel = supabase
-      .channel("operations_transfer_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "transfer_requests",
-      
-        },
-        () => fetchCounts()
-      )
-      .subscribe();
-
-    // Cleanup subscriptions
-    return () => {
-      resetPasswordChannel.unsubscribe();
-      rechargeChannel.unsubscribe();
-      redeemChannel.unsubscribe();
-      disputeChannel.unsubscribe();
-      transferChannel.unsubscribe();
-    };
   }, [user.employee_code]);
 
   const navigationItems = useMemo(
@@ -673,12 +536,12 @@ export const OperationsHeader = ({ user, requestCounts }: HeaderProps) => {
         label: "Transfer",
         prefetch: true,
       },
-      {
-        href: "/main/operations/agent",
-        icon: <User size={18} />,
-        label: "Profile",
-        prefetch: true,
-      },
+      // {
+      //   href: "/main/operations/agent",
+      //   icon: <User size={18} />,
+      //   label: "Profile",
+      //   prefetch: true,
+      // },
     ],
     []
   );
@@ -700,18 +563,10 @@ export const OperationsHeader = ({ user, requestCounts }: HeaderProps) => {
           href="/main/operations/agent"
           className="text-md font-bold text-white flex items-center gap-2"
         >
-          {profilePic ? (
-            <Image
-              src={profilePic}
-              alt="Profile"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-          ) : (
-            <User size={40} className="text-gray-400" />
-          )}
-          <span>{user.name}</span>
+          <Image src="/logo.png" alt="Logo" width={40} height={40} />
+          <span className="text-md font-bold text-white">
+            Techmile Solutions
+          </span>
         </Link>
       </div>
 
@@ -736,16 +591,16 @@ export const OperationsHeader = ({ user, requestCounts }: HeaderProps) => {
               <span className="font-medium text-start ">{item.label}</span>
             </div>
             {item.href === "/main/operations/recharge" && (
-              <CountBadge count={rechargeCount} />
+              null
             )}
             {item.href === "/main/operations/redeem" && (
-              <CountBadge count={redeemCount + disputeCount} />
+              null
             )}
             {item.href === "/main/operations/reset-player-password" && (
-              <CountBadge count={resetPasswordCount} />
+              null
             )}
             {item.href === "/main/operations/transfer" && (
-              <CountBadge count={transferCount} />
+              null
             )}
           </Link>
         ))}
@@ -888,55 +743,6 @@ export const FinanceHeader = ({ user }: { user: User }) => {
 
     // Initial fetch
     fetchCounts();
-
-    console.log("fetching counts", financeCounts);
-    // Set up realtime subscriptions with filters
-    const rechargeChannel = supabase
-      .channel("finance_recharge_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "recharge_requests",
-        
-        },
-        fetchCounts
-      )
-      .subscribe();
-    const confirmationChannel = supabase
-      .channel("finance_recharge_confirmation_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "recharge_requests",
-        },
-        fetchCounts
-      )
-      .subscribe();
-
-    const redeemChannel = supabase
-      .channel("finance_redeem_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "redeem_requests",
-          
-        },
-        fetchCounts
-      )
-      .subscribe();
-
-    // Cleanup subscriptions
-    return () => {
-      rechargeChannel.unsubscribe();
-      redeemChannel.unsubscribe();
-      confirmationChannel.unsubscribe();
-    };
   }, [user.employee_code]);
 
   const navigationItems = useMemo(
@@ -1035,7 +841,9 @@ export const FinanceHeader = ({ user }: { user: User }) => {
               {item.icon}
               <span className="font-medium">{item.label}</span>
             </div>
-            {item.count !== undefined && <CountBadge count={item.count} />}
+            {item.count !== undefined && (
+              null
+            )}
           </Link>
         ))}
       </nav>
@@ -1098,7 +906,13 @@ export const FinanceHeader = ({ user }: { user: User }) => {
   );
 };
 
-export const SupportHeader = ({ user }: { user: User }) => {
+export const SupportHeader = ({
+  user,
+  onLogout,
+}: {
+  user: User;
+  onLogout?: () => void;
+}) => {
   const pathname = usePathname();
   const router = useRouter();
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
@@ -1141,15 +955,15 @@ export const SupportHeader = ({ user }: { user: User }) => {
   };
 
   // Load selected ENT from localStorage and validate access on mount
-  useEffect(() => {
-    const savedEnt = localStorage.getItem("selectedEnt");
-    if (savedEnt && convertEntFormat.hasEntAccess(user, savedEnt)) {
-      setSelectedEnt(savedEnt);
-    } else {
-      localStorage.removeItem("selectedEnt");
-      setSelectedEnt(null);
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   const savedEnt = localStorage.getItem("selectedEnt");
+  //   if (savedEnt && convertEntFormat.hasEntAccess(user, savedEnt)) {
+  //     setSelectedEnt(savedEnt);
+  //   } else {
+  //     localStorage.removeItem("selectedEnt");
+  //     setSelectedEnt(null);
+  //   }
+  // }, [user]);
 
   // Update counts based on ENT filter
   useEffect(() => {
@@ -1214,39 +1028,6 @@ export const SupportHeader = ({ user }: { user: User }) => {
     };
 
     fetchCounts();
-
-    // Set up realtime subscriptions
-    const channels = [
-      supabase.channel("support_pending_players_changes").on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "pending_players",
-
-        },
-        fetchCounts
-      ),
-
-      supabase.channel("support_recharge_changes").on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "recharge_requests",
-
-        },
-        fetchCounts
-      ),
-    ];
-
-    // Subscribe to all channels
-    channels.forEach((channel) => channel.subscribe());
-
-    // Cleanup subscriptions
-    return () => {
-      channels.forEach((channel) => channel.unsubscribe());
-    };
   }, [selectedEnt, userEntAccess]);
 
   const navigationItems = useMemo(
@@ -1300,7 +1081,7 @@ export const SupportHeader = ({ user }: { user: User }) => {
       {
         href: "/main/support/promotions",
         icon: <CircleDollarSign size={18} />,
-        label: "Player Promotions",
+        label: "Player Promotion",
         prefetch: true,
       },
       {
@@ -1309,6 +1090,12 @@ export const SupportHeader = ({ user }: { user: User }) => {
         label: "Player Disputes",
         prefetch: true,
         count: supportCounts.dispute,
+      },
+      {
+        href: "/main/support/offline-players",
+        icon: <Circle size={18} />,
+        label: "Offline Players",
+        prefetch: true,
       },
       ...(user.role === "Manager" || user.role === "Shift Incharge"
         ? [
@@ -1430,7 +1217,9 @@ export const SupportHeader = ({ user }: { user: User }) => {
               {item.icon}
               <span className="font-medium">{item.label}</span>
             </div>
-            {item.count !== undefined && <CountBadge count={item.count} />}
+            {item.count !== undefined && (
+              null
+            )}
           </Link>
         ))}
       </nav>
@@ -1480,22 +1269,11 @@ export const SupportHeader = ({ user }: { user: User }) => {
             <div className="ml-auto flex space-x-2">
               <Link
                 href="/logout"
-                className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800"
-                title="Logout"
+                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-md w-full"
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  />
-                </svg>
+                <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800/50 rounded-md w-full">
+                  <DoorOpen size={18} />
+                </button>
               </Link>
             </div>
           </div>
@@ -1591,7 +1369,6 @@ export const AdminHeader = ({ user }: { user: User }) => {
           event: "*",
           schema: "public",
           table: "recharge_requests",
-
         },
         () => fetchVerificationCounts
       )
@@ -1605,7 +1382,6 @@ export const AdminHeader = ({ user }: { user: User }) => {
           event: "*",
           schema: "public",
           table: "redeem_requests",
-        
         },
         () => fetchVerificationCounts
       )
@@ -1717,7 +1493,10 @@ export const AdminHeader = ({ user }: { user: User }) => {
         } = await supabase
           .from("recharge_requests")
           .select("*", { count: "exact", head: true })
-          .in("status", ["sc_processed", "completed"]);
+          .eq("deposit_status", "paid")
+          .is("assigned_redeem", null);
+
+ 
 
         if (financePendingConfirmationError)
           throw financePendingConfirmationError;
@@ -2074,7 +1853,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <ArrowDownToLine size={18} />
                       <span>Recharge</span>
                     </div>
-                    <CountBadge count={operationsCounts.recharge} />
+                    {null}
                   </Link>
                   <Link
                     href="/main/operations/redeem"
@@ -2088,7 +1867,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <ArrowUpFromLine size={18} />
                       <span>Redeem</span>
                     </div>
-                    <CountBadge count={operationsCounts.redeem} />
+                    {null}
                   </Link>
                   <Link
                     href="/main/operations/reset-player-password"
@@ -2102,7 +1881,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <Key size={18} />
                       <span>Reset Password</span>
                     </div>
-                    <CountBadge count={operationsCounts.resetPassword} />
+                    {null}
                   </Link>
                   <Link
                     href="/main/operations/transfer"
@@ -2116,7 +1895,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <ArrowDownToLine size={18} />
                       <span>Transfer</span>
                     </div>
-                    <CountBadge count={operationsCounts.transfer} />
+                    {null}
                   </Link>
                 </div>
               )}
@@ -2140,8 +1919,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                 <svg
                   className={`w-4 h-4 transition-transform duration-200 ${
                     expandedSection === "verification"
-                      ? "transform rotate-180"
-                      : ""
+                      ? "transform rotate-180" : ""
                   }`}
                   fill="none"
                   stroke="currentColor"
@@ -2169,7 +1947,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <ArrowDownToLine size={18} />
                       <span>Recharge</span>
                     </div>
-                    <CountBadge count={verificationCounts.recharge} />
+                    {null}
                   </Link>
                   <Link
                     href="/main/verification/redeem"
@@ -2183,7 +1961,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <ArrowUpFromLine size={18} />
                       <span>Redeem</span>
                     </div>
-                    <CountBadge count={verificationCounts.redeem} />
+                    {null}
                   </Link>
                 </div>
               )}
@@ -2244,7 +2022,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <ArrowDownToLine size={18} />
                       <span>Recharge Queue</span>
                     </div>
-                    <CountBadge count={financeCounts.pendingRecharge} />
+                    {null}
                   </Link>
                   <Link
                     href="/main/finance/redeem"
@@ -2258,7 +2036,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <CircleDollarSign size={18} />
                       <span>Redeem Queue</span>
                     </div>
-                    <CountBadge count={financeCounts.pendingRedeem} />
+                    {null}
                   </Link>
                   <Link
                     href="/main/finance/pending-confirmation"
@@ -2272,7 +2050,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <CheckCircle size={18} />
                       <span>Confirmations</span>
                     </div>
-                    <CountBadge count={financeCounts.pendingConfirmation} />
+                    {null}
                   </Link>
                 </div>
               )}
@@ -2322,7 +2100,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <UserPlus size={18} />
                       <span>Intercom</span>
                     </div>
-                    <CountBadge count={supportCounts.intercom} />
+                    {null}
                   </Link>
                   <Link
                     href="/main/support/submit-request"
@@ -2336,7 +2114,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <ClipboardList size={18} />
                       <span>Submit Request</span>
                     </div>
-                    <CountBadge count={supportCounts.submitRequest} />
+                    {null}
                   </Link>
                   <Link
                     href="/main/support/players"
@@ -2350,7 +2128,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <Users size={18} />
                       <span>Player List</span>
                     </div>
-                    <CountBadge count={supportCounts.players} />
+                    {null}
                   </Link>
                   <Link
                     href="/main/support/players-activity"
@@ -2364,7 +2142,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <Activity size={18} />
                       <span>Player Activity</span>
                     </div>
-                    <CountBadge count={supportCounts.transactions} />
+                    {null}
                   </Link>
                   <Link
                     href="/main/support/dispute"
@@ -2378,7 +2156,7 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <FileText size={18} />
                       <span>Player Dispute</span>
                     </div>
-                    <CountBadge count={supportCounts.dispute} />
+                    {null}
                   </Link>
 
                   <Link
@@ -2407,7 +2185,19 @@ export const AdminHeader = ({ user }: { user: User }) => {
                       <span>Player Promotion</span>
                     </div>
                   </Link>
-
+                  <Link
+                    href="/main/support/offline-players"
+                    className={`flex items-center justify-between px-4 py-2 text-sm rounded-lg transition-colors duration-200 ${
+                      pathname === "/main/support/offline-players"
+                        ? "bg-blue-500/10 text-blue-500 transform scale-105 shadow-lg shadow-blue-500/20 ring-1 ring-blue-500/50"
+                        : "text-gray-400 hover:text-white hover:bg-gray-800"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Circle size={18} />
+                      <span>Offline Players</span>
+                    </div>
+                  </Link>
                   <Link
                     href="/main/support/team-members"
                     className={`flex items-center justify-between px-4 py-2 text-sm rounded-lg transition-colors duration-200 ${
@@ -2520,26 +2310,6 @@ export const AuditHeader = ({ user }: { user: User }) => {
 
     // Initial fetch
     fetchCounts();
-
-    // Set up realtime subscriptions
-    const playerActivityChannel = supabase
-      .channel("audit_player_activity_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "player_activity",
-        
-        },
-        () => fetchCounts()
-      )
-      .subscribe();
-
-    // Cleanup subscriptions
-    return () => {
-      playerActivityChannel.unsubscribe();
-    };
   }, []);
 
   const [profilePic, setProfilePic] = useState<string | null>(null);
@@ -2619,7 +2389,7 @@ export const AuditHeader = ({ user }: { user: User }) => {
       <div className="px-3 py-4">
         <nav className="space-y-1">
           {navigationItems.map((item) => (
-            <Link
+            <a
               key={item.href}
               href={item.href}
               className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
@@ -2632,8 +2402,10 @@ export const AuditHeader = ({ user }: { user: User }) => {
                 {item.icon}
                 {item.label}
               </div>
-              {item.count !== undefined && <CountBadge count={item.count} />}
-            </Link>
+              {item.count !== undefined && (
+                null
+              )}
+            </a>
           ))}
         </nav>
       </div>
@@ -2688,3 +2460,6 @@ export const AuditHeader = ({ user }: { user: User }) => {
     </div>
   );
 };
+
+// Temporarily disable CountBadge functionality
+const CountBadge = () => null;

@@ -25,7 +25,7 @@ export const AgentImage = ({ id, width = 30, height = 30 }: AgentImageProps) => 
 
       try {
         const response = await fetch(
-          `https://qgixcznoxktrxdcytyxo.supabase.co/rest/v1/users?select=user_profile_pic,name,employee_code&id=eq.${id}`,
+          `https://qgixcznoxktrxdcytyxo.supabase.co/rest/v1/users?select=name,employee_code&id=eq.${id}`,
           {
             headers: {
               'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
@@ -54,11 +54,13 @@ export const AgentImage = ({ id, width = 30, height = 30 }: AgentImageProps) => 
     fetchAgentData();
   }, [id]);
 
-  if (!id || !agentData) return null;
+  if (!id || !agentData) return <div className="flex flex-col">
+    <span className="text-sm text-gray-300">Loading...</span>
+  </div>
   
   return (
     <div className="flex items-center gap-2">
-      <div className="relative">
+      {/* <div className="relative">
         <Image
           src={agentData.user_profile_pic || 'https://cdn.pixabay.com/photo/2018/11/13/22/01/avatar-3814081_960_720.png'}
           alt={`${agentData.name}'s profile`}
@@ -66,7 +68,7 @@ export const AgentImage = ({ id, width = 30, height = 30 }: AgentImageProps) => 
           height={height}
           className="rounded-full object-cover"
         />
-      </div>
+      </div> */}
       <div className="flex flex-col">
         <span className="text-sm text-gray-300">{agentData.name}</span>
         <span className="text-xs text-gray-300">{agentData.employee_code}</span>
