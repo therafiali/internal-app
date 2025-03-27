@@ -595,16 +595,16 @@ const ProcessPaymentModal = ({
                     step="0.01"
                     placeholder="Enter amount to process"
                   />
-                  {  request.amount_hold < totalAmount && (
-                    <p className="text-xs text-red-500">
+                 {  !totalAmount || totalAmount <= 0 || totalAmount > request.amount_available && (
+                    <p className="text-xs text-yellow-500">
                       Amount cannot exceed the held amount of ${request.amount_available}
                     </p>
                   )}
-                  {totalAmount <= 0 && (
+                  {/* {!totalAmount || totalAmount <= 0  && (
                     <p className="text-xs text-red-500">
                       Amount cannot be less than $1 
                     </p>
-                  )}
+                  )} */}
                 </div>
               </>
             ) : (
