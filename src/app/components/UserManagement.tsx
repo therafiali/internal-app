@@ -864,7 +864,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
       // Build the base query
       let query = supabase
         .from("users")
-        .select("department, role, name, email, employee_code, ent_access, status", { count: 'exact' });
+        .select("department, role, name, email, employee_code, ent_access, status,id, is_active, user_activity, login_attempts", { count: 'exact' });
 
       // Apply department filter
       if (department !== "Admin") {
