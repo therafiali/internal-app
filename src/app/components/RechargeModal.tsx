@@ -294,6 +294,11 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, onSubmit
           manychat_data: selectedPlayer,
           init_by: 'agent',
           init_id: user.id,
+          initiated_by: {
+            name: user.name,
+            department: user.department,
+            id: user.employee_code
+          },
           agent_name: user.name,
           agent_department: user.department,
           page_name: selectedPage || null

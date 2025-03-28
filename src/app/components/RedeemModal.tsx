@@ -597,6 +597,11 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
             init_by: "agent",
             init_id: user.id,
             page_name: selectedPage || null,
+            initiated_by: {
+              name: user.name,
+              department: user.department,
+              id: user.employee_code
+            },
           },
         ])
         .select()
