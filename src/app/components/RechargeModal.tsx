@@ -297,7 +297,7 @@ const RechargeModal: React.FC<RechargeModalProps> = ({ isOpen, onClose, onSubmit
           initiated_by: {
             name: user.name,
             department: user.department,
-            id: user.employee_code
+            employee_code: user.employee_code
           },
           agent_name: user.name,
           agent_department: user.department,

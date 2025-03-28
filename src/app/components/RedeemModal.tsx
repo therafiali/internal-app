@@ -600,7 +600,7 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
             initiated_by: {
               name: user.name,
               department: user.department,
-              id: user.employee_code
+              employee_code: user.employee_code
             },
           },
         ])

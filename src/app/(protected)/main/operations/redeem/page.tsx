@@ -91,12 +91,12 @@ interface BaseRequest {
     status: "idle" | "in_progress";
     processed_by: string | null;
     modal_type:
-      | "process_modal"
-      | "reject_modal"
-      | "approve_modal"
-      | "verify_modal"
-      | "payment_modal"
-      | "none";
+    | "process_modal"
+    | "reject_modal"
+    | "approve_modal"
+    | "verify_modal"
+    | "payment_modal"
+    | "none";
   };
 }
 
@@ -503,6 +503,10 @@ const OperationsRedeemPage = () => {
               processed_by: null,
               modal_type: "none",
             },
+            operation_by: {
+              name: user?.name,
+              employee_code: user?.employee_code,
+            },
           })
           .eq("id", selectedRequest.id);
 
@@ -535,16 +539,14 @@ const OperationsRedeemPage = () => {
           <button
             onClick={() => handleProcessClick(request)}
             disabled={isProcessLoading || isInProgress}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
-              isProcessLoading || isInProgress
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium ${isProcessLoading || isInProgress
                 ? "bg-gray-500/10 text-gray-500"
                 : "bg-green-500/10 text-green-500 hover:bg-green-500/20"
-            }`}
+              }`}
             title={
               isInProgress && processorId
-                ? `This request is being processed by ${
-                    userName || "another user"
-                  }`
+                ? `This request is being processed by ${userName || "another user"
+                }`
                 : "Return Credits"
             }
           >
@@ -564,11 +566,10 @@ const OperationsRedeemPage = () => {
         <button
           onClick={() => handleProcessClick(request)}
           disabled={isProcessLoading || isInProgress}
-          className={`p-1.5 rounded-lg ${
-            isProcessLoading || isInProgress
+          className={`p-1.5 rounded-lg ${isProcessLoading || isInProgress
               ? "bg-gray-500/10 text-gray-500"
               : "bg-green-500/10 text-green-500 hover:bg-green-500/20"
-          }`}
+            }`}
           title={
             isInProgress ? `This request is being processed by ${userName}` : ""
           }
@@ -594,16 +595,14 @@ const OperationsRedeemPage = () => {
         <button
           onClick={() => handleRejectClick(request)}
           disabled={isProcessLoading || isInProgress}
-          className={`p-1.5 rounded-lg ${
-            isInProgress
+          className={`p-1.5 rounded-lg ${isInProgress
               ? "bg-gray-500/10 text-gray-500"
               : "bg-red-500/10 text-red-500 hover:bg-red-500/20"
-          }`}
+            }`}
           title={
             isInProgress
-              ? `This request is being processed by ${
-                  userName || "another user"
-                }`
+              ? `This request is being processed by ${userName || "another user"
+              }`
               : ""
           }
         >
@@ -653,6 +652,10 @@ const OperationsRedeemPage = () => {
               processed_by: null,
               modal_type: "none",
             },
+            operation_by: {
+              name: user?.name,
+              employee_code: user?.employee_code,
+            },
           })
           .eq("id", selectedRequest.id);
 
@@ -660,19 +663,19 @@ const OperationsRedeemPage = () => {
           console.error("Error processing disputed request:", error);
           throw error;
         }
-        const { error : transactionError } = await supabase
-        .from("transactions")
-        .update({
-          current_status: "return",
-          notes: notes.trim() || null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("recharge_id", selectedRequest.recharge_id);
+        const { error: transactionError } = await supabase
+          .from("transactions")
+          .update({
+            current_status: "return",
+            notes: notes.trim() || null,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("recharge_id", selectedRequest.recharge_id);
 
-      if (error) {
-        console.error("Error processing disputed request:", error);
-        throw error;
-      }
+        if (error) {
+          console.error("Error processing disputed request:", error);
+          throw error;
+        }
 
       } else {
         // Handle redeem request
@@ -694,9 +697,19 @@ const OperationsRedeemPage = () => {
           }
         );
 
-        if (error) {
-          console.error("Supabase error:", error);
-          throw error;
+        const { error: supabaseError } = await supabase
+          .from("redeem_requests")
+          .update({
+            operation_by: {
+              name: user?.name,
+              employee_code: user?.employee_code,
+            },
+          })
+          .eq("id", selectedRequest.id);
+
+        if (supabaseError) {
+          console.error("Supabase error:", supabaseError);
+          throw supabaseError;
         }
 
         if (!data.success) {
@@ -766,6 +779,10 @@ const OperationsRedeemPage = () => {
               processed_by: null,
               modal_type: "none",
             },
+            operation_by: {
+              name: user?.name,
+              employee_code: user?.employee_code,
+            },
           })
           .eq("id", selectedRequest.id);
 
@@ -781,6 +798,10 @@ const OperationsRedeemPage = () => {
           processed_at: new Date().toISOString(),
           notes: "Rejected by operations",
           updated_at: new Date().toISOString(),
+          operation_by: {
+            name: user?.name,
+            employee_code: user?.employee_code,
+          },
         };
 
         const { data, error } = await supabase
@@ -959,11 +980,11 @@ const OperationsRedeemPage = () => {
                       .join(", ") || "-"}
                   </td> */}
                   <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
+                    <div className="flex   gap-2">
                       <AgentInfo
-                        agentName={request.users?.name}
-                        employeeCode={request.users?.employee_code}
-                        agentImage={request.users?.user_profile_pic}
+                        agentName={request.initiated_by?.name}
+                        employeeCode={request.initiated_by?.employee_code}
+                        agentImage={request.initiated_by?.user_profile_pic}
                       />
                     </div>
                   </td>
@@ -1303,33 +1324,28 @@ const OperationsRedeemPage = () => {
             {/* Pending Card */}
             <div
               onClick={() => handleStatsCardClick("Pending")}
-              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${
-                activeTab === "Pending" ? "scale-105 before:opacity-100" : ""
-              } before:absolute before:inset-0 before:bg-gradient-to-b before:from-amber-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
+              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${activeTab === "Pending" ? "scale-105 before:opacity-100" : ""
+                } before:absolute before:inset-0 before:bg-gradient-to-b before:from-amber-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
             >
               <div
-                className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent ${
-                  activeTab === "Pending" ? "opacity-100" : ""
-                }`}
+                className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent ${activeTab === "Pending" ? "opacity-100" : ""
+                  }`}
               ></div>
               <div
-                className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-amber-500/10 to-transparent ${
-                  activeTab === "Pending" ? "opacity-100" : ""
-                }`}
+                className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-amber-500/10 to-transparent ${activeTab === "Pending" ? "opacity-100" : ""
+                  }`}
               ></div>
               <div
-                className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent transition-opacity duration-500 ${
-                  activeTab === "Pending"
+                className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Pending"
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100"
-                }`}
+                  }`}
               ></div>
               <div
-                className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent transition-opacity duration-500 ${
-                  activeTab === "Pending"
+                className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Pending"
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100"
-                }`}
+                  }`}
               ></div>
               <div className="relative">
                 <div className="flex items-center justify-between mb-4">
@@ -1353,11 +1369,10 @@ const OperationsRedeemPage = () => {
                   </div>
                 </div>
                 <div
-                  className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${
-                    activeTab === "Pending"
+                  className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${activeTab === "Pending"
                       ? "scale-105"
                       : "group-hover:scale-105"
-                  }`}
+                    }`}
                 >
                   {combinedStatsData.pending}
                 </div>
@@ -1368,33 +1383,28 @@ const OperationsRedeemPage = () => {
             {/* Disputed Card */}
             <div
               onClick={() => handleStatsCardClick("Disputed")}
-              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${
-                activeTab === "Disputed" ? "scale-105 before:opacity-100" : ""
-              } before:absolute before:inset-0 before:bg-gradient-to-b before:from-purple-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
+              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${activeTab === "Disputed" ? "scale-105 before:opacity-100" : ""
+                } before:absolute before:inset-0 before:bg-gradient-to-b before:from-purple-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
             >
               <div
-                className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent ${
-                  activeTab === "Disputed" ? "opacity-100" : ""
-                }`}
+                className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent ${activeTab === "Disputed" ? "opacity-100" : ""
+                  }`}
               ></div>
               <div
-                className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-purple-500/10 to-transparent ${
-                  activeTab === "Disputed" ? "opacity-100" : ""
-                }`}
+                className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-purple-500/10 to-transparent ${activeTab === "Disputed" ? "opacity-100" : ""
+                  }`}
               ></div>
               <div
-                className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-purple-500/50 to-transparent transition-opacity duration-500 ${
-                  activeTab === "Disputed"
+                className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-purple-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Disputed"
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100"
-                }`}
+                  }`}
               ></div>
               <div
-                className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-purple-500/50 to-transparent transition-opacity duration-500 ${
-                  activeTab === "Disputed"
+                className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-purple-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Disputed"
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100 border- border-red-500 p-2"
-                }`}
+                  }`}
               ></div>
               <div className="relative">
                 <div className="flex items-center justify-between mb-4">
@@ -1418,11 +1428,10 @@ const OperationsRedeemPage = () => {
                   </div>
                 </div>
                 <div
-                  className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${
-                    activeTab === "Disputed"
+                  className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${activeTab === "Disputed"
                       ? "scale-105"
                       : "group-hover:scale-105"
-                  }`}
+                    }`}
                 >
                   {combinedStatsData.disputed}
                 </div>
@@ -1433,35 +1442,30 @@ const OperationsRedeemPage = () => {
             {/* Verification Failed Card */}
             <div
               onClick={() => handleStatsCardClick("VerificationFailed")}
-              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${
-                activeTab === "VerificationFailed"
+              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${activeTab === "VerificationFailed"
                   ? "scale-105 before:opacity-100"
                   : ""
-              } before:absolute before:inset-0 before:bg-gradient-to-b before:from-orange-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
+                } before:absolute before:inset-0 before:bg-gradient-to-b before:from-orange-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
             >
               <div
-                className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent ${
-                  activeTab === "VerificationFailed" ? "opacity-100" : ""
-                }`}
+                className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent ${activeTab === "VerificationFailed" ? "opacity-100" : ""
+                  }`}
               ></div>
               <div
-                className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-orange-500/10 to-transparent ${
-                  activeTab === "VerificationFailed" ? "opacity-100" : ""
-                }`}
+                className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-orange-500/10 to-transparent ${activeTab === "VerificationFailed" ? "opacity-100" : ""
+                  }`}
               ></div>
               <div
-                className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-orange-500/50 to-transparent transition-opacity duration-500 ${
-                  activeTab === "VerificationFailed"
+                className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-orange-500/50 to-transparent transition-opacity duration-500 ${activeTab === "VerificationFailed"
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100"
-                }`}
+                  }`}
               ></div>
               <div
-                className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-orange-500/50 to-transparent transition-opacity duration-500 ${
-                  activeTab === "VerificationFailed"
+                className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-orange-500/50 to-transparent transition-opacity duration-500 ${activeTab === "VerificationFailed"
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100"
-                }`}
+                  }`}
               ></div>
               <div className="relative">
                 <div className="flex items-center justify-between mb-4">
@@ -1485,11 +1489,10 @@ const OperationsRedeemPage = () => {
                   </div>
                 </div>
                 <div
-                  className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${
-                    activeTab === "VerificationFailed"
+                  className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${activeTab === "VerificationFailed"
                       ? "scale-105"
                       : "group-hover:scale-105"
-                  }`}
+                    }`}
                 >
                   {combinedStatsData.verification_failed}
                 </div>
@@ -1500,33 +1503,28 @@ const OperationsRedeemPage = () => {
             {/* Rejected Card */}
             <div
               onClick={() => handleStatsCardClick("Rejected")}
-              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${
-                activeTab === "Rejected" ? "scale-105 before:opacity-100" : ""
-              } before:absolute before:inset-0 before:bg-gradient-to-b before:from-red-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
+              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${activeTab === "Rejected" ? "scale-105 before:opacity-100" : ""
+                } before:absolute before:inset-0 before:bg-gradient-to-b before:from-red-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
             >
               <div
-                className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent ${
-                  activeTab === "Rejected" ? "opacity-100" : ""
-                }`}
+                className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent ${activeTab === "Rejected" ? "opacity-100" : ""
+                  }`}
               ></div>
               <div
-                className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-red-500/10 to-transparent ${
-                  activeTab === "Rejected" ? "opacity-100" : ""
-                }`}
+                className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-red-500/10 to-transparent ${activeTab === "Rejected" ? "opacity-100" : ""
+                  }`}
               ></div>
               <div
-                className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-red-500/50 to-transparent transition-opacity duration-500 ${
-                  activeTab === "Rejected"
+                className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-red-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Rejected"
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100"
-                }`}
+                  }`}
               ></div>
               <div
-                className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-red-500/50 to-transparent transition-opacity duration-500 ${
-                  activeTab === "Rejected"
+                className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-red-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Rejected"
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100"
-                }`}
+                  }`}
               ></div>
               <div className="relative">
                 <div className="flex items-center justify-between mb-4">
@@ -1550,11 +1548,10 @@ const OperationsRedeemPage = () => {
                   </div>
                 </div>
                 <div
-                  className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${
-                    activeTab === "Rejected"
+                  className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${activeTab === "Rejected"
                       ? "scale-105"
                       : "group-hover:scale-105"
-                  }`}
+                    }`}
                 >
                   {combinedStatsData.rejected}
                 </div>
@@ -1567,41 +1564,37 @@ const OperationsRedeemPage = () => {
           <div className="flex space-x-4 mb-8 bg-[#1a1a1a] p-4 rounded-2xl border border-gray-800/20">
             <button
               onClick={() => setActiveTeamCode("ALL")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                activeTeamCode === "ALL"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTeamCode === "ALL"
                   ? "bg-blue-500/10 text-blue-500"
                   : "text-gray-400 hover:text-white"
-              }`}
+                }`}
             >
               All Teams
             </button>
             <button
               onClick={() => setActiveTeamCode("ENT-1")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                activeTeamCode === "ENT-1"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTeamCode === "ENT-1"
                   ? "bg-purple-500/10 text-purple-500"
                   : "text-gray-400 hover:text-white"
-              }`}
+                }`}
             >
               ENT-1
             </button>
             <button
               onClick={() => setActiveTeamCode("ENT-2")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                activeTeamCode === "ENT-2"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTeamCode === "ENT-2"
                   ? "bg-pink-500/10 text-pink-500"
                   : "text-gray-400 hover:text-white"
-              }`}
+                }`}
             >
               ENT-2
             </button>
             <button
               onClick={() => setActiveTeamCode("ENT-3")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                activeTeamCode === "ENT-3"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTeamCode === "ENT-3"
                   ? "bg-indigo-500/10 text-indigo-500"
                   : "text-gray-400 hover:text-white"
-              }`}
+                }`}
             >
               ENT-3
             </button>

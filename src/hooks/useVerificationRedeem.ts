@@ -36,6 +36,8 @@ export function useVerificationRedeem(activeTab: TabType = 'Pending') {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const channelRef = useRef<RealtimeChannel | null>(null);
+  const userData = localStorage.getItem('user');
+  const user = JSON.parse(userData || '{}');
 
   // Get status based on active tab
   const getStatusForTab = useCallback((tab: TabType) => {
@@ -123,6 +125,8 @@ export function useVerificationRedeem(activeTab: TabType = 'Pending') {
     if (channelRef.current) {
       channelRef.current.unsubscribe();
     }
+    const userData = localStorage.getItem('user');
+    const user = JSON.parse(userData || '{}');
 
     // Set up new subscription
     channelRef.current = supabase
@@ -156,6 +160,8 @@ export function useVerificationRedeem(activeTab: TabType = 'Pending') {
       const currentUser = await supabase.auth.getUser();
       const userId = currentUser.data.user?.id;
 
+     
+
       // First get the request data before updating
       const { data: requestData, error: fetchError } = await supabase
         .from('redeem_requests')
@@ -177,6 +183,10 @@ export function useVerificationRedeem(activeTab: TabType = 'Pending') {
             status: 'idle',
             processed_by: userId,
             modal_type: 'none'
+          },
+          verified_by: {
+            name: user.name,
+            employee_code: user.employee_code,
           },
           action_status: 'idle',
           updated_at: new Date().toISOString()
@@ -206,8 +216,10 @@ export function useVerificationRedeem(activeTab: TabType = 'Pending') {
         .from('redeem_requests')
         .update({
           status: 'verification_failed',
-          verified_by: userId,
-          
+          verified_by: {
+            name: user.name,
+            employee_code: user.employee_code,
+          },
           notes: remarks,
           processing_state: {
             status: 'idle',
