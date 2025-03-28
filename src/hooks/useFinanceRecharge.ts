@@ -92,6 +92,7 @@ export interface PendingWithdrawal {
   redeem_id: string;
   totalAmount: number;
   amountHold: number;
+  redeem_online_status: boolean;
   amountAvailable: number;
   amountPaid: number;
   paymentMethods: Array<{
@@ -258,6 +259,7 @@ export const useFinanceRecharge = () => {
         paymentMethods: item.payment_methods || [],
         profile_pic: item.player_data?.profile?.profilePic || `https://ui-avatars.com/api/?name=${item.player_name}`,
         name: item.player_name,
+        redeem_online_status: item.redeem_online_status,
         created_at: item.created_at,
         online_status: item.redeem_online_status
       }));

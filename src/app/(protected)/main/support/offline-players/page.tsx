@@ -43,8 +43,8 @@ export default function RedeemRequestsPage() {
     );
   }
 
-  const handleSetOnline = (playerId: string) => {
-    updateStatus(playerId, {
+  const handleSetOnline = (vip_code: string) => {
+    updateStatus(vip_code, {
       onSuccess: () => {
         toast.success("Player status updated successfully");
       },
@@ -131,7 +131,7 @@ export default function RedeemRequestsPage() {
                             variant="outline"
                             size="sm"
                             disabled={isPending}
-                            onClick={() => handleSetOnline(request.player!.id)}
+                            onClick={() => handleSetOnline(request.vip_code)}
                             className="text-green-400 border-green-600 hover:text-green-300 hover:border-green-500"
                           >
                             {isPending ? "Updating..." : "Set Online"}

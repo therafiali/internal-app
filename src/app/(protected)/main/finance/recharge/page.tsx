@@ -88,6 +88,9 @@ const QueueDashboard = () => {
     processRechargeRequest,
   } = useFinanceRecharge();
 
+
+
+  console.log("pendingWithdrawals", pendingWithdrawals);
   // Add state for process modal
   const [showProcessModal, setShowProcessModal] = useState(false);
   const [processingDeposit, setProcessingDeposit] =
@@ -788,7 +791,16 @@ const QueueDashboard = () => {
         rechargeAmount
       );
 
-      return hasMatchingPaymentMethod && hasEnoughAmount;
+      // Check creation time and online status
+      const createdAt = new Date(withdrawal.created_at).getTime();
+      const oneHourAgo = new Date().getTime() - (60 * 60 * 1000);
+      const isWithinLastHour = createdAt > oneHourAgo;
+      const isOnline = withdrawal.redeem_online_status === true;
+
+      // Show request if it's within last hour OR if user is online
+      const meetsTimeOrOnlineCondition = isWithinLastHour || isOnline;
+
+      return hasMatchingPaymentMethod && hasEnoughAmount && meetsTimeOrOnlineCondition;
     });
 
     return filtered;

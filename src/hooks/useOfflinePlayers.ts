@@ -157,13 +157,21 @@ export function useUpdatePlayerStatus() {
   const queryClient = useQueryClient()
   
   return useMutation({
-    mutationFn: async (playerId: string) => {
+    mutationFn: async (vip_code: string) => {
       const { error } = await supabase
         .from('players')
         .update({ redeem_online_status: true })
-        .eq('id', playerId)
+        .eq('vip_code', vip_code)
       
       if (error) throw error
+      const { error : redeemError } = await supabase
+      .from('redeem_requests')
+      .update({ redeem_online_status: true })
+      .eq('vip_code', vip_code)
+    
+    if (error) throw error
+    if (redeemError) throw redeemError
+
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['redeem-requests'] })
