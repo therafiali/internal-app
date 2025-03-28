@@ -439,6 +439,10 @@ export const useFinanceRedeem = () => {
             processed_by: null,
             modal_type: 'none'
           },
+          finance_by: {
+            name: user?.name,
+            employee_code: user?.employee_code,
+          },
           action_status: 'idle',
           finance_id: user?.id,
           updated_at: new Date().toISOString()
@@ -538,6 +542,10 @@ export const useFinanceRedeem = () => {
             processed_by: null,
             modal_type: 'none'
           },
+          finance_by: {
+            name: user?.name,
+            employee_code: user?.employee_code,
+          },
           action_status: 'idle',
           updated_at: new Date().toISOString()
         })
@@ -565,6 +573,10 @@ export const useFinanceRedeem = () => {
             status: 'idle',
             processed_by: null,
             modal_type: 'none'
+          },
+          finance_by: {
+            name: user?.name,
+            employee_code: user?.employee_code,
           },
           action_status: 'idle',
           updated_at: new Date().toISOString()

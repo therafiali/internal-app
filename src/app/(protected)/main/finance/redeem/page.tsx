@@ -25,6 +25,7 @@ import TimeElapsed from "@/app/components/TimeElapsed";
 import { AgentImage } from "@/app/components/recharge/AgentImage";
 import { useUserName } from "@/hooks/useUserName";
 import RedeemHoldDetailsModal from "@/app/components/RedeemHoldDetailsModal";
+import { AgentInfo } from "@/app/components/AgentInfo";
 
 interface Stats {
   pending: number;
@@ -153,8 +154,8 @@ const FinanceRedeemPage = () => {
                 activeTab === "All"
                   ? undefined
                   : activeTab === "Partially Paid"
-                  ? ["queued_partially_paid", "paused_partially_paid"]
-                  : activeTab.toLowerCase();
+                    ? ["queued_partially_paid", "paused_partially_paid"]
+                    : activeTab.toLowerCase();
 
               const shouldRefreshList =
                 activeTab === "All" ||
@@ -669,16 +670,14 @@ const FinanceRedeemPage = () => {
               <button
                 onClick={() => handleProcessPayment(request)}
                 disabled={isProcessLoading || isInProgress}
-                className={`p-1.5 rounded-lg relative group ${
-                  isProcessLoading || isInProgress
+                className={`p-1.5 rounded-lg relative group ${isProcessLoading || isInProgress
                     ? "bg-gray-500/10 text-gray-500"
                     : "bg-emerald-400 hover:bg-emerald-500"
-                }`}
+                  }`}
                 title={
                   isInProgress
-                    ? `This request is being processed by ${
-                        userName || "another user"
-                      }`
+                    ? `This request is being processed by ${userName || "another user"
+                    }`
                     : ""
                 }
               >
@@ -697,11 +696,10 @@ const FinanceRedeemPage = () => {
               <button
                 onClick={() => handlePauseRequest(request.redeemId)}
                 disabled={isPauseLoading || isInProgress}
-                className={`p-1.5 rounded-lg ${
-                  isPauseLoading || isInProgress
+                className={`p-1.5 rounded-lg ${isPauseLoading || isInProgress
                     ? "bg-gray-500/10 text-gray-500"
                     : "bg-yellow-400 hover:bg-yellow-500"
-                }`}
+                  }`}
               >
                 {isPauseLoading ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -713,40 +711,39 @@ const FinanceRedeemPage = () => {
           )}
         {(request.status === "paused" ||
           request.status === "paused_partially_paid") && (
-          <button
-            onClick={() => handleResumeRequest(request.redeemId)}
-            disabled={isResumeLoading || isInProgress}
-            className={`p-1.5 rounded-lg ${
-              isResumeLoading || isInProgress
-                ? "bg-gray-500/10 text-gray-500"
-                : "bg-yellow-400 hover:bg-yellow-500"
-            }`}
-          >
-            {isResumeLoading ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="black"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            )}
-          </button>
-        )}
+            <button
+              onClick={() => handleResumeRequest(request.redeemId)}
+              disabled={isResumeLoading || isInProgress}
+              className={`p-1.5 rounded-lg ${isResumeLoading || isInProgress
+                  ? "bg-gray-500/10 text-gray-500"
+                  : "bg-yellow-400 hover:bg-yellow-500"
+                }`}
+            >
+              {isResumeLoading ? (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="black"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              )}
+            </button>
+          )}
       </div>
     );
   };
@@ -857,7 +854,9 @@ const FinanceRedeemPage = () => {
                 activeTab === "All" ? undefined : activeTab.toLowerCase()
               );
             } catch (error) {
-              console.error("Error processing payment:", error);
+              setShowProcessModal(false);
+              setSelectedRequest(null);
+              // console.error("Error processing payment:", error);
               // setAlertModal({
               //   isOpen: true,
               //   type: "error",
@@ -888,33 +887,28 @@ const FinanceRedeemPage = () => {
                 {/* Queued Card */}
                 <div
                   onClick={() => handleTabClick("Queued")}
-                  className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${
-                    activeTab === "Queued" ? "scale-105 before:opacity-100" : ""
-                  } before:absolute before:inset-0 before:bg-gradient-to-b before:from-amber-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
+                  className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${activeTab === "Queued" ? "scale-105 before:opacity-100" : ""
+                    } before:absolute before:inset-0 before:bg-gradient-to-b before:from-amber-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
                 >
                   <div
-                    className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent ${
-                      activeTab === "Queued" ? "opacity-100" : ""
-                    }`}
+                    className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent ${activeTab === "Queued" ? "opacity-100" : ""
+                      }`}
                   ></div>
                   <div
-                    className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-amber-500/10 to-transparent ${
-                      activeTab === "Queued" ? "opacity-100" : ""
-                    }`}
+                    className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-amber-500/10 to-transparent ${activeTab === "Queued" ? "opacity-100" : ""
+                      }`}
                   ></div>
                   <div
-                    className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent transition-opacity duration-500 ${
-                      activeTab === "Queued"
+                    className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Queued"
                         ? "opacity-100"
                         : "opacity-0 group-hover:opacity-100"
-                    }`}
+                      }`}
                   ></div>
                   <div
-                    className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent transition-opacity duration-500 ${
-                      activeTab === "Queued"
+                    className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Queued"
                         ? "opacity-100"
                         : "opacity-0 group-hover:opacity-100"
-                    }`}
+                      }`}
                   ></div>
                   <div className="relative">
                     <div className="flex items-center justify-between mb-4">
@@ -940,11 +934,10 @@ const FinanceRedeemPage = () => {
                     <div className="flex flex-col gap-2">
                       <div>
                         <div
-                          className={`text-2xl font-bold text-white mb-1 transition-transform duration-300 ${
-                            activeTab === "Queued"
+                          className={`text-2xl font-bold text-white mb-1 transition-transform duration-300 ${activeTab === "Queued"
                               ? "scale-105"
                               : "group-hover:scale-105"
-                          }`}
+                            }`}
                         >
                           {isLoading ? (
                             <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
@@ -976,33 +969,28 @@ const FinanceRedeemPage = () => {
                 {/* Paused Card */}
                 <div
                   onClick={() => handleTabClick("Paused")}
-                  className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${
-                    activeTab === "Paused" ? "scale-105 before:opacity-100" : ""
-                  } before:absolute before:inset-0 before:bg-gradient-to-b before:from-yellow-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
+                  className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${activeTab === "Paused" ? "scale-105 before:opacity-100" : ""
+                    } before:absolute before:inset-0 before:bg-gradient-to-b before:from-yellow-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
                 >
                   <div
-                    className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent ${
-                      activeTab === "Paused" ? "opacity-100" : ""
-                    }`}
+                    className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-yellow-500/50 to-transparent ${activeTab === "Paused" ? "opacity-100" : ""
+                      }`}
                   ></div>
                   <div
-                    className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-yellow-500/10 to-transparent ${
-                      activeTab === "Paused" ? "opacity-100" : ""
-                    }`}
+                    className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-yellow-500/10 to-transparent ${activeTab === "Paused" ? "opacity-100" : ""
+                      }`}
                   ></div>
                   <div
-                    className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-yellow-500/50 to-transparent transition-opacity duration-500 ${
-                      activeTab === "Paused"
+                    className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-yellow-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Paused"
                         ? "opacity-100"
                         : "opacity-0 group-hover:opacity-100"
-                    }`}
+                      }`}
                   ></div>
                   <div
-                    className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-yellow-500/50 to-transparent transition-opacity duration-500 ${
-                      activeTab === "Paused"
+                    className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-yellow-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Paused"
                         ? "opacity-100"
                         : "opacity-0 group-hover:opacity-100"
-                    }`}
+                      }`}
                   ></div>
                   <div className="relative">
                     <div className="flex items-center justify-between mb-4">
@@ -1026,11 +1014,10 @@ const FinanceRedeemPage = () => {
                       </div>
                     </div>
                     <div
-                      className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${
-                        activeTab === "Paused"
+                      className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${activeTab === "Paused"
                           ? "scale-105"
                           : "group-hover:scale-105"
-                      }`}
+                        }`}
                     >
                       {isLoading ? (
                         <div className="w-6 h-6 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin" />
@@ -1045,35 +1032,30 @@ const FinanceRedeemPage = () => {
                 {/* Partially Paid Card */}
                 <div
                   onClick={() => handleTabClick("Partially Paid")}
-                  className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${
-                    activeTab === "Partially Paid"
+                  className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${activeTab === "Partially Paid"
                       ? "scale-105 before:opacity-100"
                       : ""
-                  } before:absolute before:inset-0 before:bg-gradient-to-b before:from-purple-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
+                    } before:absolute before:inset-0 before:bg-gradient-to-b before:from-purple-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
                 >
                   <div
-                    className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent ${
-                      activeTab === "Partially Paid" ? "opacity-100" : ""
-                    }`}
+                    className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent ${activeTab === "Partially Paid" ? "opacity-100" : ""
+                      }`}
                   ></div>
                   <div
-                    className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-purple-500/10 to-transparent ${
-                      activeTab === "Partially Paid" ? "opacity-100" : ""
-                    }`}
+                    className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-purple-500/10 to-transparent ${activeTab === "Partially Paid" ? "opacity-100" : ""
+                      }`}
                   ></div>
                   <div
-                    className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-purple-500/50 to-transparent transition-opacity duration-500 ${
-                      activeTab === "Partially Paid"
+                    className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-purple-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Partially Paid"
                         ? "opacity-100"
                         : "opacity-0 group-hover:opacity-100"
-                    }`}
+                      }`}
                   ></div>
                   <div
-                    className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-purple-500/50 to-transparent transition-opacity duration-500 ${
-                      activeTab === "Partially Paid"
+                    className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-purple-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Partially Paid"
                         ? "opacity-100"
                         : "opacity-0 group-hover:opacity-100"
-                    }`}
+                      }`}
                   ></div>
                   <div className="relative">
                     <div className="flex items-center justify-between mb-4">
@@ -1097,11 +1079,10 @@ const FinanceRedeemPage = () => {
                       </div>
                     </div>
                     <div
-                      className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${
-                        activeTab === "Partially Paid"
+                      className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${activeTab === "Partially Paid"
                           ? "scale-105"
                           : "group-hover:scale-105"
-                      }`}
+                        }`}
                     >
                       {isLoading ? (
                         <div className="w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
@@ -1116,35 +1097,30 @@ const FinanceRedeemPage = () => {
                 {/* Completed Card */}
                 <div
                   onClick={() => handleTabClick("Completed")}
-                  className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${
-                    activeTab === "Completed"
+                  className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${activeTab === "Completed"
                       ? "scale-105 before:opacity-100"
                       : ""
-                  } before:absolute before:inset-0 before:bg-gradient-to-b before:from-emerald-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
+                    } before:absolute before:inset-0 before:bg-gradient-to-b before:from-emerald-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
                 >
                   <div
-                    className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent ${
-                      activeTab === "Completed" ? "opacity-100" : ""
-                    }`}
+                    className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent ${activeTab === "Completed" ? "opacity-100" : ""
+                      }`}
                   ></div>
                   <div
-                    className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-emerald-500/10 to-transparent ${
-                      activeTab === "Completed" ? "opacity-100" : ""
-                    }`}
+                    className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-emerald-500/10 to-transparent ${activeTab === "Completed" ? "opacity-100" : ""
+                      }`}
                   ></div>
                   <div
-                    className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-transparent transition-opacity duration-500 ${
-                      activeTab === "Completed"
+                    className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Completed"
                         ? "opacity-100"
                         : "opacity-0 group-hover:opacity-100"
-                    }`}
+                      }`}
                   ></div>
                   <div
-                    className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-transparent transition-opacity duration-500 ${
-                      activeTab === "Completed"
+                    className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Completed"
                         ? "opacity-100"
                         : "opacity-0 group-hover:opacity-100"
-                    }`}
+                      }`}
                   ></div>
                   <div className="relative">
                     <div className="flex items-center justify-between mb-4">
@@ -1168,11 +1144,10 @@ const FinanceRedeemPage = () => {
                       </div>
                     </div>
                     <div
-                      className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${
-                        activeTab === "Completed"
+                      className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${activeTab === "Completed"
                           ? "scale-105"
                           : "group-hover:scale-105"
-                      }`}
+                        }`}
                     >
                       {isLoading ? (
                         <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
@@ -1239,25 +1214,33 @@ const FinanceRedeemPage = () => {
                           key={index}
                           className="hover:bg-[#252b3b]"
                         >
-                          <td 
+                          <td
                             className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
                             onClick={() => {
                               setSelectedRequest(request);
                               setShowHoldDetailsModal(true);
                             }}
                           >
-                          Agent
+                            <AgentInfo
+                              name={request.operation_by?.name}
+                              employeeCode={request.operation_by?.employee_code}
+
+                            />
                           </td>
-                          <td 
+                          <td
                             className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
                             onClick={() => {
                               setSelectedRequest(request);
                               setShowHoldDetailsModal(true);
                             }}
                           >
-                           Agent
+                            <AgentInfo
+                              name={request.verified_by?.name}
+                              employeeCode={request.verified_by?.employee_code}
+
+                            />
                           </td>
-                          <td 
+                          <td
                             className="px-4 py-3 whitespace-nowrap text-center cursor-pointer"
                             onClick={() => {
                               setSelectedRequest(request);
@@ -1274,7 +1257,7 @@ const FinanceRedeemPage = () => {
                             )}
                           </td>
 
-                          <td 
+                          <td
                             className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
                             onClick={() => {
                               setSelectedRequest(request);
@@ -1283,7 +1266,7 @@ const FinanceRedeemPage = () => {
                           >
                             {request.redeem_id}
                           </td>
-                          <td 
+                          <td
                             className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
                             onClick={() => {
                               setSelectedRequest(request);
@@ -1311,7 +1294,7 @@ const FinanceRedeemPage = () => {
                               </div>
                             </div>
                           </td>
-                          <td 
+                          <td
                             className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
                             onClick={() => {
                               setSelectedRequest(request);
@@ -1322,7 +1305,7 @@ const FinanceRedeemPage = () => {
                               ${(request.total_amount || 0).toFixed(2)}
                             </span>
                           </td>
-                          <td 
+                          <td
                             className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
                             onClick={() => {
                               setSelectedRequest(request);
@@ -1333,7 +1316,7 @@ const FinanceRedeemPage = () => {
                               ${(request.amount_paid || 0).toFixed(2)}
                             </span>
                           </td>
-                          <td 
+                          <td
                             className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
                             onClick={() => {
                               setSelectedRequest(request);
@@ -1344,7 +1327,7 @@ const FinanceRedeemPage = () => {
                               ${(request.amount_hold || 0).toFixed(2)}
                             </span>
                           </td>
-                          <td 
+                          <td
                             className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
                             onClick={() => {
                               setSelectedRequest(request);
@@ -1359,7 +1342,7 @@ const FinanceRedeemPage = () => {
                               ).toFixed(2)}
                             </span>
                           </td>
-                          <td 
+                          <td
                             className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
                             onClick={() => {
                               setSelectedRequest(request);
@@ -1370,7 +1353,7 @@ const FinanceRedeemPage = () => {
                               ${(request.amount_available || 0).toFixed(2)}
                             </span>
                           </td>
-                          <td 
+                          <td
                             className="px-4 py-3 whitespace-nowrap text-sm text-gray-300 text-center cursor-pointer"
                             onClick={() => {
                               setSelectedRequest(request);
@@ -1384,12 +1367,12 @@ const FinanceRedeemPage = () => {
                                     <Image
                                       src={
                                         request.paymentMethods[0].type ===
-                                        "cashapp"
+                                          "cashapp"
                                           ? cashappIcon
                                           : request.paymentMethods[0].type ===
                                             "venmo"
-                                          ? venmoIcon
-                                          : chimeIcon
+                                            ? venmoIcon
+                                            : chimeIcon
                                       }
                                       alt={request.paymentMethods[0].type}
                                       className="w-full h-full object-contain"
