@@ -139,7 +139,7 @@ interface RechargeSubmitData {
 interface ScreenshotModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (screenshotUrl: string) => Promise<void>;
+  onSubmit: (screenshotUrl: string, file: File | null) => Promise<void>;
   rechargeId: string;
 }
 
@@ -185,8 +185,25 @@ const ScreenshotModal: React.FC<ScreenshotModalProps> = ({
   const [screenshotUrl, setScreenshotUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   if (!isOpen) return null;
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+      setScreenshotUrl("");
+    }
+  };
+
+  const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setScreenshotUrl(event.target.value);
+    setSelectedFile(null);
+    setPreviewUrl(null);
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -209,10 +226,27 @@ const ScreenshotModal: React.FC<ScreenshotModalProps> = ({
             <input
               type="text"
               value={screenshotUrl}
-              onChange={(e) => setScreenshotUrl(e.target.value)}
+              onChange={handleUrlChange}
               className="w-full bg-[#252b3b] border border-gray-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
               placeholder="Enter screenshot URL..."
             />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm text-gray-400">Upload Screenshot</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-full bg-[#252b3b] border border-gray-800 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+            />
+            {previewUrl && (
+              <img
+                src={previewUrl}
+                alt="Preview"
+                className="mt-2 max-w-full rounded-lg"
+              />
+            )}
           </div>
         </div>
 
@@ -230,7 +264,7 @@ const ScreenshotModal: React.FC<ScreenshotModalProps> = ({
               setIsSubmitting(true);
               setError(null);
               try {
-                await onSubmit(screenshotUrl);
+                await onSubmit(screenshotUrl, selectedFile);
                 onClose();
               } catch (err) {
                 setError(
@@ -242,7 +276,7 @@ const ScreenshotModal: React.FC<ScreenshotModalProps> = ({
                 setIsSubmitting(false);
               }
             }}
-            disabled={isSubmitting || !screenshotUrl}
+            disabled={isSubmitting || (!screenshotUrl && !selectedFile)}
             className="px-4 py-2 text-sm font-medium bg-blue-500 text-white rounded-lg hover:bg-blue-600 
               transition-all duration-200 transform hover:scale-105 active:scale-95 
               disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
@@ -368,31 +402,62 @@ const SubmitRequest = () => {
     }
   };
 
-  const handleSubmitScreenshot = async (screenshotUrl: string) => {
-    // Update the recharge request in Supabase
-    const { error: updateError } = await supabase
-      .from("recharge_requests")
-      .update({
-        status: "sc_submitted",
-        screenshot_url: screenshotUrl,
-        updated_at: new Date().toISOString(),
-        sc_submit_id: user?.id,
-      })
-      .eq("id", screenshotModal.rechargeId);
+  const handleSubmitScreenshot = async (screenshotUrl: string, file: File | null) => {
+    try {
+      let finalScreenshotUrl = screenshotUrl;
 
-    if (updateError) {
-      throw new Error(updateError.message);
+      // If a file is selected, upload it to Supabase storage
+      if (file) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${screenshotModal.rechargeId}-${Date.now()}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        // Upload the file
+        const { error: uploadError, data } = await supabase.storage
+          .from('screenshots')
+          .upload(filePath, file);
+
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          throw new Error(`Failed to upload screenshot: ${uploadError.message}`);
+        }
+
+        // Get the public URL of the uploaded file
+        const { data: { publicUrl } } = supabase.storage
+          .from('screenshots')
+          .getPublicUrl(filePath);
+
+        finalScreenshotUrl = publicUrl;
+      }
+
+      // Update the recharge request in Supabase
+      const { error: updateError } = await supabase
+        .from("recharge_requests")
+        .update({
+          status: "sc_submitted",
+          screenshot_url: finalScreenshotUrl,
+          updated_at: new Date().toISOString(),
+          sc_submit_id: user?.id,
+        })
+        .eq("id", screenshotModal.rechargeId);
+
+      if (updateError) {
+        throw new Error(updateError.message);
+      }
+
+      await fetchRechargeRequests();
+      setScreenshotModal({ isOpen: false, rechargeId: "" });
+      setShowSuccessModal({
+        show: true,
+        type: "recharge",
+        data: {
+          id: screenshotModal.rechargeId,
+        },
+      });
+    } catch (error) {
+      console.error('Error submitting screenshot:', error);
+      throw error;
     }
-
-    await fetchRechargeRequests();
-    setScreenshotModal({ isOpen: false, rechargeId: "" });
-    setShowSuccessModal({
-      show: true,
-      type: "recharge",
-      data: {
-        id: screenshotModal.rechargeId,
-      },
-    });
   };
 
   useEffect(() => {

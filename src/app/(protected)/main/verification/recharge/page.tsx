@@ -5,13 +5,14 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import RefreshButton from "@/app/components/RefreshButton";
 import { useActivityLogger } from "@/hooks/useActivityLogger";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, Link } from "lucide-react";
 import AlertModal from "@/app/components/AlertModal";
 import { supabase } from "@/lib/supabase";
 import { sendManyChatMessage, MANYCHAT_TEMPLATES } from "@/utils/manychat";
 import TimeElapsed from "@/app/components/TimeElapsed";
-import { useUserName } from "@/hooks/useUserName";
+
 import { AgentImage } from "@/app/components/recharge/AgentImage";
+import Image from "next/image";
 
 interface User {
   id: string;
@@ -65,12 +66,12 @@ interface RechargeRequest {
     status: "idle" | "in_progress";
     processed_by: string | null;
     modal_type:
-      | "process_modal"
-      | "reject_modal"
-      | "approve_modal"
-      | "verify_modal"
-      | "payment_modal"
-      | "none";
+    | "process_modal"
+    | "reject_modal"
+    | "approve_modal"
+    | "verify_modal"
+    | "payment_modal"
+    | "none";
   };
   rejectReason?: string;
   rejectNotes?: string;
@@ -264,8 +265,7 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
   useEffect(() => {
     if (hasError && retryCount < maxRetries && imageUrl) {
       console.log(
-        `ScreenshotViewer - Retrying image load (${
-          retryCount + 1
+        `ScreenshotViewer - Retrying image load (${retryCount + 1
         }/${maxRetries})`
       );
       const timer = setTimeout(() => {
@@ -402,11 +402,10 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
           ref={imageRef}
           src={processedUrl || imageUrl}
           alt={alt}
-          className={`rounded-lg object-contain w-full h-auto max-h-[300px] transition-all duration-300 ${
-            isLoading || (hasError && retryCount >= maxRetries)
+          className={`rounded-lg object-contain w-full h-auto max-h-[300px] transition-all duration-300 ${isLoading || (hasError && retryCount >= maxRetries)
               ? "opacity-0"
               : "opacity-100"
-          } cursor-zoom-in`}
+            } cursor-zoom-in`}
           onLoad={handleImageLoad}
           onError={handleImageError}
           style={{
@@ -614,9 +613,8 @@ const ScreenshotFetcher: React.FC<ScreenshotFetcherProps> = ({
           {
             headers: {
               apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
-              Authorization: `Bearer ${
-                process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
-              }`,
+              Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+                }`,
             },
           }
         );
@@ -691,7 +689,7 @@ const ScreenshotFetcher: React.FC<ScreenshotFetcherProps> = ({
 const VerificationRechargePage: React.FC = () => {
   const router = useRouter();
   const { logActivity } = useActivityLogger();
-  const { userName, getUserName } = useUserName();
+
   const [isLoading, setIsLoading] = useState(false);
   const [rechargeRequests, setRechargeRequests] = useState<RechargeRequest[]>(
     []
@@ -1108,21 +1106,7 @@ const VerificationRechargePage: React.FC = () => {
   }, [rechargeRequests, user?.id]);
 
   // Add useEffect to fetch processor name when a request's processing state changes
-  useEffect(() => {
-    const fetchProcessorName = async () => {
-      const processingRequests = rechargeRequests.filter(
-        (request) => request.processing_state?.status === "in_progress"
-      );
 
-      for (const request of processingRequests) {
-        if (request.processing_state?.processed_by) {
-          await getUserName(request.processing_state.processed_by);
-        }
-      }
-    };
-
-    fetchProcessorName();
-  }, [rechargeRequests, getUserName]);
 
   // Update handleProcessClick
   const handleProcessClick = async (request: RechargeRequest) => {
@@ -1369,7 +1353,7 @@ const VerificationRechargePage: React.FC = () => {
         const { data: redeemRequest, error: redeemFetchError } = await supabase
           .from("redeem_requests")
           .select(
-            "amount_hold, amount_paid, messenger_id,redeem_id, total_amount"
+            "amount_hold, amount_paid, messenger_id,redeem_id, total_amount, game_platform"
           )
           .eq("id", redeemId)
           .single();
@@ -1412,6 +1396,8 @@ const VerificationRechargePage: React.FC = () => {
 
         // Send ManyChat message to the player
         try {
+
+          console.log("manychat message:", redeemRequest.messenger_id, selectedRequest.amount, redeemRequest.redeem_id, selectedRequest.gamePlatform, selectedRequest.teamCode);
           await sendManyChatMessage({
             subscriberId: redeemRequest.messenger_id,
             message: MANYCHAT_TEMPLATES.RECHARGE_VERIFICATION_WITH_REDEEM(
@@ -1476,8 +1462,8 @@ const VerificationRechargePage: React.FC = () => {
   const handleRejectSubmit = async () => {
     if (!selectedRequest || !rejectReason || !user) return;
 
-    console.log(  rejectReason, rejectNotes, " reject submit");
-  
+    console.log(rejectReason, rejectNotes, " reject submit");
+
 
     try {
       setProcessingAction(true);
@@ -1487,8 +1473,9 @@ const VerificationRechargePage: React.FC = () => {
         .from("recharge_requests")
         .update({
           status: "sc_rejected",
-          notes: rejectReason + ', ' + rejectNotes ,
-           
+          notes: rejectReason + ': ' + rejectNotes,
+          deposit_status: "pending",
+
           // rejected_by: {
           //   id: user.id,
           //   name: user.id,
@@ -1505,6 +1492,16 @@ const VerificationRechargePage: React.FC = () => {
 
       if (updateError) {
         throw new Error(updateError.message);
+      }
+      const { error: transationError } = await supabase
+        .from("transactions")
+        .update({
+          deposit_status: "pending",
+        })
+        .eq("recharge_uuid", selectedRequest.rechargeId);
+
+      if (transationError) {
+        throw new Error(transationError.message);
       }
 
       setShowRejectModal(false);
@@ -1607,33 +1604,28 @@ const VerificationRechargePage: React.FC = () => {
             {/* Pending Card */}
             <div
               onClick={() => handleStatsCardClick("Pending")}
-              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${
-                activeTab === "Pending" ? "scale-105 before:opacity-100" : ""
-              } before:absolute before:inset-0 before:bg-gradient-to-b before:from-amber-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
+              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${activeTab === "Pending" ? "scale-105 before:opacity-100" : ""
+                } before:absolute before:inset-0 before:bg-gradient-to-b before:from-amber-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
             >
               <div
-                className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent ${
-                  activeTab === "Pending" ? "opacity-100" : ""
-                }`}
+                className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent ${activeTab === "Pending" ? "opacity-100" : ""
+                  }`}
               ></div>
               <div
-                className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-amber-500/10 to-transparent ${
-                  activeTab === "Pending" ? "opacity-100" : ""
-                }`}
+                className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-amber-500/10 to-transparent ${activeTab === "Pending" ? "opacity-100" : ""
+                  }`}
               ></div>
               <div
-                className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent transition-opacity duration-500 ${
-                  activeTab === "Pending"
+                className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Pending"
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100"
-                }`}
+                  }`}
               ></div>
               <div
-                className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent transition-opacity duration-500 ${
-                  activeTab === "Pending"
+                className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Pending"
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100"
-                }`}
+                  }`}
               ></div>
               <div className="relative">
                 <div className="flex items-center justify-between mb-4">
@@ -1657,11 +1649,10 @@ const VerificationRechargePage: React.FC = () => {
                   </div>
                 </div>
                 <div
-                  className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${
-                    activeTab === "Pending"
+                  className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${activeTab === "Pending"
                       ? "scale-105"
                       : "group-hover:scale-105"
-                  }`}
+                    }`}
                 >
                   {pendingCount}
                 </div>
@@ -1672,33 +1663,28 @@ const VerificationRechargePage: React.FC = () => {
             {/* Processed Card */}
             <div
               onClick={() => handleStatsCardClick("Processed")}
-              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${
-                activeTab === "Processed" ? "scale-105 before:opacity-100" : ""
-              } before:absolute before:inset-0 before:bg-gradient-to-b before:from-emerald-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
+              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${activeTab === "Processed" ? "scale-105 before:opacity-100" : ""
+                } before:absolute before:inset-0 before:bg-gradient-to-b before:from-emerald-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
             >
               <div
-                className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent ${
-                  activeTab === "Processed" ? "opacity-100" : ""
-                }`}
+                className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent ${activeTab === "Processed" ? "opacity-100" : ""
+                  }`}
               ></div>
               <div
-                className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-emerald-500/10 to-transparent ${
-                  activeTab === "Processed" ? "opacity-100" : ""
-                }`}
+                className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-emerald-500/10 to-transparent ${activeTab === "Processed" ? "opacity-100" : ""
+                  }`}
               ></div>
               <div
-                className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-transparent transition-opacity duration-500 ${
-                  activeTab === "Processed"
+                className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Processed"
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100"
-                }`}
+                  }`}
               ></div>
               <div
-                className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-transparent transition-opacity duration-500 ${
-                  activeTab === "Processed"
+                className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Processed"
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100"
-                }`}
+                  }`}
               ></div>
               <div className="relative">
                 <div className="flex items-center justify-between mb-4">
@@ -1722,11 +1708,10 @@ const VerificationRechargePage: React.FC = () => {
                   </div>
                 </div>
                 <div
-                  className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${
-                    activeTab === "Processed"
+                  className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${activeTab === "Processed"
                       ? "scale-105"
                       : "group-hover:scale-105"
-                  }`}
+                    }`}
                 >
                   {processedCount}
                 </div>
@@ -1737,33 +1722,28 @@ const VerificationRechargePage: React.FC = () => {
             {/* Rejected Card */}
             <div
               onClick={() => handleStatsCardClick("Rejected")}
-              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${
-                activeTab === "Rejected" ? "scale-105 before:opacity-100" : ""
-              } before:absolute before:inset-0 before:bg-gradient-to-b before:from-red-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
+              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${activeTab === "Rejected" ? "scale-105 before:opacity-100" : ""
+                } before:absolute before:inset-0 before:bg-gradient-to-b before:from-red-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
             >
               <div
-                className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent ${
-                  activeTab === "Rejected" ? "opacity-100" : ""
-                }`}
+                className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent ${activeTab === "Rejected" ? "opacity-100" : ""
+                  }`}
               ></div>
               <div
-                className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-red-500/10 to-transparent ${
-                  activeTab === "Rejected" ? "opacity-100" : ""
-                }`}
+                className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-red-500/10 to-transparent ${activeTab === "Rejected" ? "opacity-100" : ""
+                  }`}
               ></div>
               <div
-                className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-red-500/50 to-transparent transition-opacity duration-500 ${
-                  activeTab === "Rejected"
+                className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-red-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Rejected"
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100"
-                }`}
+                  }`}
               ></div>
               <div
-                className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-red-500/50 to-transparent transition-opacity duration-500 ${
-                  activeTab === "Rejected"
+                className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-red-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Rejected"
                     ? "opacity-100"
                     : "opacity-0 group-hover:opacity-100"
-                }`}
+                  }`}
               ></div>
               <div className="relative">
                 <div className="flex items-center justify-between mb-4">
@@ -1787,11 +1767,10 @@ const VerificationRechargePage: React.FC = () => {
                   </div>
                 </div>
                 <div
-                  className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${
-                    activeTab === "Rejected"
+                  className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${activeTab === "Rejected"
                       ? "scale-105"
                       : "group-hover:scale-105"
-                  }`}
+                    }`}
                 >
                   {rejectedCount}
                 </div>
@@ -1804,41 +1783,37 @@ const VerificationRechargePage: React.FC = () => {
           <div className="flex space-x-4 mb-8 bg-[#1a1a1a] p-4 rounded-2xl border border-gray-800/20">
             <button
               onClick={() => setActiveTeamCode("ALL")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                activeTeamCode === "ALL"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTeamCode === "ALL"
                   ? "bg-blue-500/10 text-blue-500"
                   : "text-gray-400 hover:text-white"
-              }`}
+                }`}
             >
               All Teams
             </button>
             <button
               onClick={() => setActiveTeamCode("ENT-1")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                activeTeamCode === "ENT-1"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTeamCode === "ENT-1"
                   ? "bg-purple-500/10 text-purple-500"
                   : "text-gray-400 hover:text-white"
-              }`}
+                }`}
             >
               ENT-1
             </button>
             <button
               onClick={() => setActiveTeamCode("ENT-2")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                activeTeamCode === "ENT-2"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTeamCode === "ENT-2"
                   ? "bg-pink-500/10 text-pink-500"
                   : "text-gray-400 hover:text-white"
-              }`}
+                }`}
             >
               ENT-2
             </button>
             <button
               onClick={() => setActiveTeamCode("ENT-3")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                activeTeamCode === "ENT-3"
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTeamCode === "ENT-3"
                   ? "bg-indigo-500/10 text-indigo-500"
                   : "text-gray-400 hover:text-white"
-              }`}
+                }`}
             >
               ENT-3
             </button>
@@ -2061,29 +2036,27 @@ const VerificationRechargePage: React.FC = () => {
                                   onClick={() => handleProcessClick(request)}
                                   disabled={
                                     request.rechargeId ===
-                                      selectedRequest?.rechargeId ||
+                                    selectedRequest?.rechargeId ||
                                     request.processing_state?.status ===
-                                      "in_progress"
+                                    "in_progress"
                                   }
                                   title={
                                     request.processing_state?.status ===
-                                    "in_progress"
-                                      ? `This request is being processed by ${
-                                          userName || "another user"
-                                        }`
+                                      "in_progress"
+                                      ? `This request is being processed by ${"another user"
+                                      }`
                                       : "Process request"
                                   }
-                                  className={`px-3 py-1.5 text-xs font-medium ${
-                                    request.rechargeId ===
+                                  className={`px-3 py-1.5 text-xs font-medium ${request.rechargeId ===
                                       selectedRequest?.rechargeId ||
-                                    request.processing_state?.status ===
+                                      request.processing_state?.status ===
                                       "in_progress"
                                       ? "bg-gray-500/10 text-gray-500 cursor-not-allowed"
                                       : "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20"
-                                  } rounded-lg transition-all duration-200`}
+                                    } rounded-lg transition-all duration-200`}
                                 >
                                   {request.processing_state?.status ===
-                                  "in_progress" ? (
+                                    "in_progress" ? (
                                     <div className="flex items-center gap-2">
                                       <Loader2 className="w-4 h-4 animate-spin" />
                                       <span>Processing...</span>
@@ -2096,29 +2069,27 @@ const VerificationRechargePage: React.FC = () => {
                                   onClick={() => handleRejectClick(request)}
                                   disabled={
                                     request.rechargeId ===
-                                      selectedRequest?.rechargeId ||
+                                    selectedRequest?.rechargeId ||
                                     request.processing_state?.status ===
-                                      "in_progress"
+                                    "in_progress"
                                   }
                                   title={
                                     request.processing_state?.status ===
-                                    "in_progress"
-                                      ? `This request is being processed by ${
-                                          userName || "another user"
-                                        }`
+                                      "in_progress"
+                                      ? `This request is being processed by ${"another user"
+                                      }`
                                       : "Process request"
                                   }
-                                  className={`px-3 py-1.5 text-xs font-medium ${
-                                    request.rechargeId ===
+                                  className={`px-3 py-1.5 text-xs font-medium ${request.rechargeId ===
                                       selectedRequest?.rechargeId ||
-                                    request.processing_state?.status ===
+                                      request.processing_state?.status ===
                                       "in_progress"
                                       ? "bg-gray-500/10 text-gray-500 cursor-not-allowed"
                                       : "bg-red-500/10 text-red-500 hover:bg-red-500/20"
-                                  } rounded-lg transition-all duration-200`}
+                                    } rounded-lg transition-all duration-200`}
                                 >
                                   {request.processing_state?.status ===
-                                  "in_progress" ? (
+                                    "in_progress" ? (
                                     <div className="flex items-center gap-2">
                                       <Loader2 className="w-4 h-4 animate-spin" />
                                       <span>Processing...</span>
@@ -2244,10 +2215,13 @@ const VerificationRechargePage: React.FC = () => {
                     Screenshot
                   </h3>
                   <div className="relative rounded-lg overflow-hidden">
-                      <ScreenshotFetcher
+                    {/* <ScreenshotFetcher
                         rechargeId={selectedRequest.rechargeId}
                         initialUrl={selectedRequest.screenshotUrl}
-                      />
+                      /> */}
+                    <a href={selectedRequest.screenshotUrl as string} target='_blank'>
+                      <img src={selectedRequest.screenshotUrl as string} alt='' width={500} height={500} />
+                    </a>
                   </div>
                 </div>
               </div>
@@ -2335,8 +2309,8 @@ const VerificationRechargePage: React.FC = () => {
 
       {/* Reject Modal */}
       {showRejectModal && selectedRequest && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="bg-[#1a1a1a] rounded-2xl w-[600px] border border-gray-800/20">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center ">
+          <div className="bg-[#1a1a1a] rounded-2xl w-[600px] border border-gray-800/20 max-h-[90vh] overflow-y-scroll">
             <div className="flex items-center justify-between p-6 border-b border-gray-800">
               <h3 className="text-xl font-semibold text-white">
                 Reject Request
@@ -2390,10 +2364,13 @@ const VerificationRechargePage: React.FC = () => {
                   Screenshot
                 </h3>
                 <div className="relative rounded-lg overflow-hidden">
-                  <ScreenshotFetcher
+                  {/* <ScreenshotFetcher
                     rechargeId={selectedRequest.rechargeId}
                     initialUrl={selectedRequest.screenshotUrl}
-                  />
+                  /> */}
+                  <a href={selectedRequest.screenshotUrl as string} target='_blank'>
+                    <img src={selectedRequest.screenshotUrl as string} alt='' width={500} height={500} />
+                  </a>
                 </div>
               </div>
 

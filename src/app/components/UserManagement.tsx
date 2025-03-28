@@ -7,6 +7,7 @@ import { useActivityLogger } from "@/hooks/useActivityLogger";
 import { supabase } from "@/lib/supabase";
 import { User } from "@/supabase/types";
 import Image from 'next/image';
+import { Button } from "@/components/ui/button";
 
 interface UserManagementProps {
   currentUser: User;
@@ -808,7 +809,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
 
   // Add new state for filtered users
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-
+  const [q, setQ] = useState<string>("");
   // Define all available departments
   const allDepartments = [
     "Admin",
@@ -1095,15 +1096,27 @@ export const UserManagement: React.FC<UserManagementProps> = ({
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
               </div>
+              <div className="flex items-center gap-2"> 
               <input
                 type="text"
                 placeholder="Search users..."
-                value={filters.searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
+                value={q}
+                onChange={(e) => {
+                  setQ(e.target.value)
+                }}
                 className="w-full bg-[#252b3b] border border-gray-800 rounded-xl pl-10 px-4 py-3 text-white 
-                  focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20 
-                  transition-all duration-200"
-              />
+                focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/20 
+                transition-all duration-200"
+                />
+              <button
+                onClick={() => handleSearch(q)}
+                className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 
+                  transition-all duration-200 transform hover:scale-105 active:scale-95
+                  shadow-lg shadow-blue-600/20 font-medium"
+              >
+                Search
+              </button>
+                </div>
             </div>
           </div>
 
