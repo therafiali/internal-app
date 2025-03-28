@@ -48,17 +48,19 @@ export default function MainLayout({
   ];
 
   return (
-    <div className="min-h-screen bg-gray-700">
- 
+    <div className="min-h-screen   bg-neutral-900">
+
+      
+
 
       {/* Main Content */}
       <div
         className={cn(
-          'transition-all duration-300 ease-in-out bg-gray-700',
-         
+          'transition-all duration-300 ease-in-out bg-neutral-900',
+          
         )}
-      >
-        <main className="">{children}</main>
+        >
+         <main className="">{children}</main>
       </div>
     </div>
   );

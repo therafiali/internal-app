@@ -864,7 +864,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
       // Build the base query
       let query = supabase
         .from("users")
-        .select("department, role, name, email, employee_code, ent_access, status,id, is_active, user_activity, login_attempts", { count: 'exact' });
+        .select("department, role, name, email, employee_code, ent_access, status", { count: 'exact' });
 
       // Apply department filter
       if (department !== "Admin") {
@@ -1267,7 +1267,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
                               ALL
                             </span>
                           ) : (
-                            user.ent_access?.map((ent) => {
+                            user.ent_access?.map((ent, index) => {
                               const isPrimary = (user.role === 'Shift Incharge' || user.role === 'Agent') && 
                                                ent === user.ent_section;
                               const colors = {
@@ -1278,7 +1278,7 @@ export const UserManagement: React.FC<UserManagementProps> = ({
 
                               return (
                                 <span
-                                  key={ent}
+                                  key={index}
                                   className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium border ${colors[ent]}`}
                                 >
                                   {ent}
