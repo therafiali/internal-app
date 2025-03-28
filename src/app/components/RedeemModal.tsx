@@ -8,8 +8,8 @@ import GameUsernameField from "./GameUsernameField";
 import { supabase } from "@/lib/supabase";
 import { convertEntFormat } from "@/utils/entFormat";
 import { EntType } from "@/supabase/types";
-import { sendManyChatMessage, MANYCHAT_TEMPLATES } from '@/utils/manychat';
-import EntPagesDropdown from './EntPagesDropdown';
+import { sendManyChatMessage, MANYCHAT_TEMPLATES } from "@/utils/manychat";
+import EntPagesDropdown from "./EntPagesDropdown";
 
 interface RedeemModalProps {
   isOpen: boolean;
@@ -68,7 +68,7 @@ const VerifyOTPModal: React.FC<VerifyOTPModalProps> = ({
   isVerifying,
   verificationError,
   handleVerifyOtp,
-  redeemRequest
+  redeemRequest,
 }) => {
   if (!isOpen) return null;
 
@@ -76,8 +76,13 @@ const VerifyOTPModal: React.FC<VerifyOTPModalProps> = ({
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
       <div className="bg-[#1a1a1a] rounded-2xl w-full max-w-md border border-gray-800/20">
         <div className="flex items-center justify-between p-6 border-b border-gray-800">
-          <h3 className="text-xl font-semibold text-white">Verify Redeem Request</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
+          <h3 className="text-xl font-semibold text-white">
+            Verify Redeem Request
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-white transition-colors"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -87,7 +92,9 @@ const VerifyOTPModal: React.FC<VerifyOTPModalProps> = ({
             <div className="bg-[#252b3b] rounded-lg p-4 space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">Redeem ID:</span>
-                <span className="text-white font-medium">{redeemRequest.redeemId}</span>
+                <span className="text-white font-medium">
+                  {redeemRequest.redeemId}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">Username:</span>
@@ -123,9 +130,7 @@ const VerifyOTPModal: React.FC<VerifyOTPModalProps> = ({
           </div>
 
           {verificationError && (
-            <div className="text-red-500 text-sm mt-2">
-              {verificationError}
-            </div>
+            <div className="text-red-500 text-sm mt-2">{verificationError}</div>
           )}
 
           <button
@@ -138,14 +143,30 @@ const VerifyOTPModal: React.FC<VerifyOTPModalProps> = ({
           >
             {isVerifying ? (
               <>
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Verifying...
               </>
             ) : (
-              'Verify Request'
+              "Verify Request"
             )}
           </button>
         </div>
@@ -160,7 +181,7 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
   initialRedeemId,
   isVerificationOnly = false,
   redeemRequest,
-  user
+  user,
 }) => {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [amount, setAmount] = useState("");
@@ -186,7 +207,7 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
     null
   );
   const [redeemId, setRedeemId] = useState<string>("");
-  const [selectedPage, setSelectedPage] = useState('');
+  const [selectedPage, setSelectedPage] = useState("");
   const [pageError, setPageError] = useState<string | null>(null);
 
   // Reset states when modal closes
@@ -201,7 +222,7 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
         setCashTags({ cashapp: "", venmo: "", chime: "" });
         setNotes("");
         setError(null);
-        setSelectedPage('');
+        setSelectedPage("");
         setPageError(null);
       }
       setOtp("");
@@ -285,8 +306,8 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
 
       const verifyBody = {
         redeemId: isVerificationOnly ? initialRedeemId : redeemId,
-        otp: otp
-            };
+        otp: otp,
+      };
 
       console.log("Sending verification request with:", verifyBody);
 
@@ -330,15 +351,18 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
   };
 
   // Add this function to validate page team code
-  const validatePageTeamCode = async (pageName: string, playerTeamCode: string) => {
+  const validatePageTeamCode = async (
+    pageName: string,
+    playerTeamCode: string
+  ) => {
     const { data, error } = await supabase
-      .from('ent_pages')
-      .select('team_code')
-      .eq('page_name', pageName)
+      .from("ent_pages")
+      .select("team_code")
+      .eq("page_name", pageName)
       .single();
 
     if (error) {
-      console.error('Error validating page team code:', error);
+      console.error("Error validating page team code:", error);
       return false;
     }
 
@@ -351,15 +375,18 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
 
     // Validate ENT access before proceeding
     if (!validateEntAccess(selectedPlayer)) {
-      setError('You do not have access to submit requests for this ENT');
+      setError("You do not have access to submit requests for this ENT");
       return;
     }
 
     // Validate page team code
     if (selectedPage) {
-      const isValidPage = await validatePageTeamCode(selectedPage, selectedPlayer.team);
+      const isValidPage = await validatePageTeamCode(
+        selectedPage,
+        selectedPlayer.team
+      );
       if (!isValidPage) {
-        setPageError('Selected page does not match player\'s team code');
+        setPageError("Selected page does not match player's team code");
         return;
       }
     }
@@ -371,29 +398,29 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
     try {
       // Check if player is banned
       const { data: playerStatus, error: statusError } = await supabase
-        .from('players')
-        .select('status')
-        .eq('vip_code', selectedPlayer.vipCode)
+        .from("players")
+        .select("status")
+        .eq("vip_code", selectedPlayer.vipCode)
         .single();
 
       if (statusError) throw statusError;
 
-      if (playerStatus?.status === 'banned') {
-        setError('This player is banned. Cannot process any requests.');
+      if (playerStatus?.status === "banned") {
+        setError("This player is banned. Cannot process any requests.");
         return;
       }
 
       // Update player's game usernames
       const platformToKey: { [key: string]: string } = {
-        'Fire Kirin': 'fireKirin',
-        'Game Vault': 'gameVault',
-        'Orion Stars': 'orionStars',
-        'Juwa': 'juwa',
-        'Moolah': 'moolah',
-        'Panda Master': 'pandaMaster',
-        'Yolo': 'yolo',
-        'VBlink': 'vblink',
-        'Vegas Sweeps': 'vegasSweeps',
+        "Fire Kirin": "fireKirin",
+        "Game Vault": "gameVault",
+        "Orion Stars": "orionStars",
+        Juwa: "juwa",
+        Moolah: "moolah",
+        "Panda Master": "pandaMaster",
+        Yolo: "yolo",
+        VBlink: "vblink",
+        "Vegas Sweeps": "vegasSweeps",
         // Add more mappings as needed
       };
 
@@ -401,27 +428,28 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
       if (key) {
         // Get current game_usernames
         const { data: playerData, error: fetchError } = await supabase
-          .from('players')
-          .select('game_usernames')
-          .eq('vip_code', selectedPlayer.vipCode)
+          .from("players")
+          .select("game_usernames")
+          .eq("vip_code", selectedPlayer.vipCode)
           .single();
 
-        if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 is "not found" error
+        if (fetchError && fetchError.code !== "PGRST116") {
+          // PGRST116 is "not found" error
           throw fetchError;
         }
 
         // Update game_usernames
         const currentUsernames = playerData?.game_usernames || {};
         const { error: updateError } = await supabase
-          .from('players')
+          .from("players")
           .update({
             vip_code: selectedPlayer.vipCode,
             game_usernames: {
               ...currentUsernames,
-              [key]: username
-            }
+              [key]: username,
+            },
           })
-          .eq('vip_code', selectedPlayer.vipCode);
+          .eq("vip_code", selectedPlayer.vipCode);
 
         if (updateError) throw updateError;
       }
@@ -434,7 +462,7 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
           username: cashTags[type as keyof CashTags],
         }));
 
-      console.log('Starting redeem submission for player:', {
+      console.log("Starting redeem submission for player:", {
         vipCode: selectedPlayer.vipCode,
         playerName: selectedPlayer.playerName,
         platform,
@@ -442,26 +470,28 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
       });
 
       // Get player's current data including last reset time
-      console.log('Fetching player data from Supabase...');
+      console.log("Fetching player data from Supabase...");
       const { data: playerData, error: playerError } = await supabase
-        .from('players')
-        .select('total_redeemed, game_limits, last_reset_time')
-        .eq('vip_code', selectedPlayer.vipCode)
+        .from("players")
+        .select("total_redeemed, game_limits, last_reset_time")
+        .eq("vip_code", selectedPlayer.vipCode)
         .single();
 
       if (playerError) {
-        console.error('Error fetching player data:', playerError);
+        console.error("Error fetching player data:", playerError);
         throw playerError;
       }
 
-      console.log('Retrieved player data:', playerData);
+      console.log("Retrieved player data:", playerData);
 
       const currentTime = new Date();
-      const lastResetTime = playerData.last_reset_time ? new Date(playerData.last_reset_time) : new Date(0);
+      const lastResetTime = playerData.last_reset_time
+        ? new Date(playerData.last_reset_time)
+        : new Date(0);
       const timeDifference = currentTime.getTime() - lastResetTime.getTime();
       const hoursSinceReset = timeDifference / (1000 * 60 * 60);
 
-      console.log('Time calculations:', {
+      console.log("Time calculations:", {
         currentTime: currentTime.toISOString(),
         lastResetTime: lastResetTime.toISOString(),
         timeDifference,
@@ -470,23 +500,24 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
 
       // If 24 hours have passed since last reset, reset the limits
       if (hoursSinceReset >= 24) {
-        console.log('24 hours passed, resetting limits...');
+        console.log("24 hours passed, resetting limits...");
         // Reset all limits
         const { error: resetError } = await supabase
-          .from('players')
+          .from("players")
           .update({
             total_redeemed: 0,
             game_limits: [],
-            last_reset_time: currentTime.toISOString()
+            last_reset_time: currentTime.toISOString(),
+            redeem_online_status: false,
           })
-          .eq('vip_code', selectedPlayer.vipCode);
+          .eq("vip_code", selectedPlayer.vipCode);
 
         if (resetError) {
-          console.error('Error resetting limits:', resetError);
+          console.error("Error resetting limits:", resetError);
           throw resetError;
         }
 
-        console.log('Limits reset successfully');
+        console.log("Limits reset successfully");
         // Reset local variables
         playerData.total_redeemed = 0;
         playerData.game_limits = [];
@@ -495,17 +526,19 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
       // Check total redeem limit
       const currentTotalRedeemed = playerData.total_redeemed || 0;
       const requestAmount = parseFloat(amount);
-      
-      console.log('Current redeem state:', {
+
+      console.log("Current redeem state:", {
         existingTotal: currentTotalRedeemed,
         newAmount: requestAmount,
         willAddTo: currentTotalRedeemed + requestAmount,
-        playerData: playerData
+        playerData: playerData,
       });
 
       if (currentTotalRedeemed + requestAmount > 2000) {
-        const errorMsg = `Daily redeem limit exceeded. Current total: $${currentTotalRedeemed}. Available to redeem: $${2000 - currentTotalRedeemed}. Maximum allowed: $2000`;
-        console.log('Total limit exceeded:', errorMsg);
+        const errorMsg = `Daily redeem limit exceeded. Current total: $${currentTotalRedeemed}. Available to redeem: $${
+          2000 - currentTotalRedeemed
+        }. Maximum allowed: $2000`;
+        console.log("Total limit exceeded:", errorMsg);
         setError(errorMsg);
         setIsSubmitting(false);
         return;
@@ -513,10 +546,10 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
 
       // Check game-specific limit
       const gameLimits = playerData.game_limits || [];
-      console.log('Current game limits:', {
+      console.log("Current game limits:", {
         allLimits: gameLimits,
         platform: platform,
-        searching: `Searching for ${platform} in limits`
+        searching: `Searching for ${platform} in limits`,
       });
 
       const currentGameLimit = gameLimits.find(
@@ -525,72 +558,78 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
 
       const currentGameAmount = currentGameLimit ? currentGameLimit.amount : 0;
 
-      console.log('Game limit check:', {
+      console.log("Game limit check:", {
         foundLimit: currentGameLimit,
         currentAmount: currentGameAmount,
         newAmount: requestAmount,
         willTotal: currentGameAmount + requestAmount,
-        maxAllowed: 500
+        maxAllowed: 500,
       });
 
       if (currentGameAmount + requestAmount > 500) {
         const errorMsg = `Game limit exceeded for ${platform}. Current amount: $${currentGameAmount}. Maximum allowed per game: $500`;
-        console.log('Game limit exceeded:', errorMsg);
+        console.log("Game limit exceeded:", errorMsg);
         setError(errorMsg);
         setIsSubmitting(false);
         return;
       }
 
       // Create redeem request in Supabase
-      console.log('Creating redeem request...', selectedPlayer);
+      console.log("Creating redeem request...", selectedPlayer);
       const { data: redeemData, error: redeemError } = await supabase
-        .from('redeem_requests')
-        .insert([{
-          vip_code: selectedPlayer.vipCode,
-          player_name: selectedPlayer.playerName,
-          messenger_id: selectedPlayer.messengerId,
-          team_code: selectedPlayer.team,
-          game_platform: platform,
-          game_username: username,
-          total_amount: parseFloat(amount),
-          status: 'pending',
-          payment_methods: formattedPaymentMethods,
-          notes: notes || 'Agent initiated redeem request',
-          manychat_data: selectedPlayer,
-          player_data: selectedPlayer,
-          agent_name: user.name,
-          agent_department: user.department,
-          init_by: 'agent',
-          init_id: user.id,
-          page_name: selectedPage || null
-        }])
+        .from("redeem_requests")
+        .insert([
+          {
+            vip_code: selectedPlayer.vipCode,
+            player_name: selectedPlayer.playerName,
+            messenger_id: selectedPlayer.messengerId,
+            team_code: selectedPlayer.team,
+            game_platform: platform,
+            game_username: username,
+            total_amount: parseFloat(amount),
+            status: "pending",
+            payment_methods: formattedPaymentMethods,
+            notes: notes || "Agent initiated redeem request",
+            manychat_data: selectedPlayer,
+            player_data: selectedPlayer,
+            agent_name: user.name,
+            agent_department: user.department,
+            init_by: "agent",
+            init_id: user.id,
+            page_name: selectedPage || null,
+          },
+        ])
         .select()
         .single();
 
       if (redeemError) {
-        console.error('Error creating redeem request:', redeemError);
+        console.error("Error creating redeem request:", redeemError);
         throw redeemError;
       }
 
-      console.log('Redeem request created successfully:', redeemData);
+      console.log("Redeem request created successfully:", redeemData);
 
       // Send notification to player via ManyChat
       try {
         await sendManyChatMessage({
           subscriberId: selectedPlayer.messengerId,
-          message: MANYCHAT_TEMPLATES.REDEEM_REQUEST_CREATED(parseFloat(amount), platform, redeemData.redeem_id),
+          message: MANYCHAT_TEMPLATES.REDEEM_REQUEST_CREATED(
+            parseFloat(amount),
+            platform,
+            redeemData.redeem_id
+          ),
           customFields: {
             redeem_request_id: redeemData.redeem_id,
-            redeem_status: 'pending',
+            redeem_status: "pending",
             redeem_amount: parseFloat(amount),
             redeem_platform: platform,
             redeem_created_at: new Date().toISOString(),
-            redeem_created_by: user.name
+            redeem_created_by: user.name,
           },
-          teamCode: selectedPlayer.team
+          teamCode: selectedPlayer.team,
         });
       } catch (manyChatError) {
-        console.error('Error sending ManyChat notification:', manyChatError);
+        console.error("Error sending ManyChat notification:", manyChatError);
         // Continue with the process even if notification fails
       }
 
@@ -600,100 +639,104 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
         (limit: any) => limit.game_name === platform
       );
 
-      console.log('Preparing game limits update:', {
+      console.log("Preparing game limits update:", {
         existingLimits: gameLimits,
         foundIndex: gameIndex,
-        currentPlatform: platform
+        currentPlatform: platform,
       });
 
       if (gameIndex >= 0) {
         // Update existing game limit
         const newAmount = currentGameAmount + requestAmount;
-        console.log('Updating existing game limit:', {
+        console.log("Updating existing game limit:", {
           oldAmount: currentGameAmount,
           addingAmount: requestAmount,
-          newTotal: newAmount
+          newTotal: newAmount,
         });
-        
+
         updatedGameLimits[gameIndex] = {
           ...updatedGameLimits[gameIndex],
           amount: newAmount,
-          timestamp: currentTime.toISOString()
+          timestamp: currentTime.toISOString(),
         };
       } else {
         // Add new game limit
-        console.log('Adding new game limit:', {
+        console.log("Adding new game limit:", {
           platform: platform,
-          initialAmount: requestAmount
+          initialAmount: requestAmount,
         });
-        
+
         updatedGameLimits.push({
           game_name: platform,
           amount: requestAmount,
-          timestamp: currentTime.toISOString()
+          timestamp: currentTime.toISOString(),
         });
       }
 
-      console.log('Final game limits to update:', updatedGameLimits);
+      console.log("Final game limits to update:", updatedGameLimits);
 
       // Calculate new total redeemed amount
       const newTotalRedeemed = currentTotalRedeemed + requestAmount;
-      console.log('Calculating new total redeemed:', {
+      console.log("Calculating new total redeemed:", {
         previousTotal: currentTotalRedeemed,
         addingAmount: requestAmount,
-        newTotal: newTotalRedeemed
+        newTotal: newTotalRedeemed,
       });
 
       // Update player record with new limits
-      console.log('Updating player record with new limits...');
+      console.log("Updating player record with new limits...");
       const updateData = {
         total_redeemed: newTotalRedeemed, // Use the calculated new total
         game_limits: updatedGameLimits,
-        ...(hoursSinceReset >= 24 ? { last_reset_time: currentTime.toISOString() } : {})
+        ...(hoursSinceReset >= 24
+          ? { last_reset_time: currentTime.toISOString() }
+          : {}),
       };
-      console.log('Final update data to be sent:', updateData);
+      console.log("Final update data to be sent:", updateData);
 
       // Double check the data before update
-      console.log('Verification before update:', {
+      console.log("Verification before update:", {
         originalTotal: playerData.total_redeemed,
         amountToAdd: requestAmount,
         calculatedNewTotal: newTotalRedeemed,
         willReset: hoursSinceReset >= 24,
-        finalUpdateData: updateData
+        finalUpdateData: updateData,
       });
 
       const { error: updateError } = await supabase
-        .from('players')
+        .from("players")
         .update(updateData)
-        .eq('vip_code', selectedPlayer.vipCode);
+        .eq("vip_code", selectedPlayer.vipCode);
 
       if (updateError) {
-        console.error('Error updating player record:', updateError);
+        console.error("Error updating player record:", updateError);
         throw updateError;
       }
 
       // Verify the update was successful
       const { data: verifyData, error: verifyError } = await supabase
-        .from('players')
-        .select('total_redeemed, game_limits')
-        .eq('vip_code', selectedPlayer.vipCode)
+        .from("players")
+        .select("total_redeemed, game_limits")
+        .eq("vip_code", selectedPlayer.vipCode)
         .single();
 
-      console.log('Verification after update:', {
+      console.log("Verification after update:", {
         success: !verifyError,
         newData: verifyData,
-        expectedTotal: newTotalRedeemed
+        expectedTotal: newTotalRedeemed,
       });
 
       if (verifyError) {
-        console.error('Error verifying update:', verifyError);
+        console.error("Error verifying update:", verifyError);
       }
 
-      console.log('Player record updated successfully');
+      console.log("Player record updated successfully");
       onClose();
     } catch (err) {
-      console.error('Error submitting redeem request:', err);
-      setError(err instanceof Error ? err.message : 'Failed to submit redeem request');
+      console.error("Error submitting redeem request:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to submit redeem request"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -753,16 +796,21 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-[#1a1a1a] rounded-2xl w-full max-w-lg border border-gray-800/20 shadow-lg">
             <div className="flex items-center justify-between p-6 border-b border-gray-800">
-              <h3 className="text-xl font-semibold text-white">Submit Redeem Request</h3>
-              <button onClick={handleModalClose} className="text-gray-400 hover:text-white transition-colors">
+              <h3 className="text-xl font-semibold text-white">
+                Submit Redeem Request
+              </h3>
+              <button
+                onClick={handleModalClose}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="p-6 space-y-4">
-              <PlayerSearch 
-                onSelect={setSelectedPlayer} 
-                selectedPlayer={selectedPlayer} 
+              <PlayerSearch
+                onSelect={setSelectedPlayer}
+                selectedPlayer={selectedPlayer}
                 userEntAccess={user.ent_access}
               />
 
@@ -971,9 +1019,7 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
                   disabled={!selectedPlayer}
                 />
                 {pageError && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {pageError}
-                  </p>
+                  <p className="text-sm text-red-500 mt-1">{pageError}</p>
                 )}
               </div>
 
@@ -1006,10 +1052,23 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
               </button>
               <button
                 onClick={handleSubmit}
-                disabled={isSubmitting || !selectedPlayer || !platform || !username || !amount || 
-                  !Object.values(paymentMethods).some(Boolean) || 
-                  !Object.entries(paymentMethods).every(([method, enabled]) => !enabled || isValidPaymentTag(method as keyof CashTags, cashTags[method as keyof CashTags])) ||
-                  !validateEntAccess(selectedPlayer)}
+                disabled={
+                  isSubmitting ||
+                  !selectedPlayer ||
+                  !platform ||
+                  !username ||
+                  !amount ||
+                  !Object.values(paymentMethods).some(Boolean) ||
+                  !Object.entries(paymentMethods).every(
+                    ([method, enabled]) =>
+                      !enabled ||
+                      isValidPaymentTag(
+                        method as keyof CashTags,
+                        cashTags[method as keyof CashTags]
+                      )
+                  ) ||
+                  !validateEntAccess(selectedPlayer)
+                }
                 className="px-4 py-2 text-sm font-medium bg-blue-500 text-white rounded-lg hover:bg-blue-600 
                   transition-all duration-200 transform hover:scale-105 active:scale-95 
                   disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none
@@ -1021,7 +1080,7 @@ const RedeemModal: React.FC<RedeemModalProps> = ({
                     Submitting...
                   </>
                 ) : (
-                  'Submit Request'
+                  "Submit Request"
                 )}
               </button>
             </div>
