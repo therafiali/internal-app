@@ -64,13 +64,20 @@ export interface RedeemRequest {
   agent_department: string;
   processed_by: string | null;
   processed_at: string | null;
-  verified_by: string | null;
   verified_id: string | null;
   verified_at: string | null;
   verification_remarks: string | null;
   created_at: string;
   updated_at: string;
   requestedAt: string;
+  operation_by: {
+    name: string;
+    employee_code: string;
+  } | null; 
+  verified_by: {
+    name: string;
+    employee_code: string;
+  } | null;
   player_data: {
     profile: {
       profilePic: string;
@@ -169,6 +176,7 @@ export const useFinanceRedeem = () => {
       requestedAt: data.created_at,
       player_data: data.player_data,
       processing_state: processingState,
+      operation_by: data.operation_by
     };
   };
 

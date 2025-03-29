@@ -1222,8 +1222,8 @@ const FinanceRedeemPage = () => {
                             }}
                           >
                             <AgentInfo
-                              name={request.operation_by?.name}
-                              employeeCode={request.operation_by?.employee_code}
+                              agentName={request.operation_by?.name || ""}
+                              employeeCode={request.operation_by?.employee_code || ""}
 
                             />
                           </td>
@@ -1235,9 +1235,8 @@ const FinanceRedeemPage = () => {
                             }}
                           >
                             <AgentInfo
-                              name={request.verified_by?.name}
-                              employeeCode={request.verified_by?.employee_code}
-
+                              agentName={request.verified_by?.name || ""}
+                              employeeCode={request.verified_by?.employee_code || ""}
                             />
                           </td>
                           <td
