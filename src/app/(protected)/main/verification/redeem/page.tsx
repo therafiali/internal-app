@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { AdminHeader, VerificationHeader } from "@/app/components/Headers";
 import { Check, X } from "lucide-react";
-import RefreshButton from "@/app/components/RefreshButton";
 import { useActivityLogger } from "@/hooks/useActivityLogger";
 import { useUserName } from "@/hooks/useUserName";
 import Image from "next/image";
@@ -1455,15 +1454,7 @@ const VerificationRedeemPage = () => {
             <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
               Redeem Requests
             </h1>
-            <RefreshButton
-              onClick={() => {
-                Promise.all([
-                  fetchRedeemRequests(),
-                  dispatch(fetchRejectedRequests()),
-                ]);
-              }}
-              isLoading={loading || loadingRejected}
-            />
+
           </div>
 
           {/* Stats Cards */}
