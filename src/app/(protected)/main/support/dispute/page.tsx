@@ -2,12 +2,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import {
-  AdminHeader,
-  OperationsHeader,
-  SupportHeader,
-} from "@/app/components/Headers";
-import RefreshButton from "@/app/components/RefreshButton";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { convertEntFormat } from "@/utils/entFormat";
@@ -515,7 +509,6 @@ const DisputePage = () => {
   const [user, setUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState<TabType>("Pending");
   const [activeTicketType, setActiveTicketType] = useState<TicketType>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [rechargeRequests, setRechargeRequests] = useState<RechargeRequest[]>(
     []
   );
@@ -750,12 +743,7 @@ const DisputePage = () => {
     setIsRejectModalOpen(true);
   };
 
-  // Add refresh functionality
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await fetchRechargeRequests();
-    setIsRefreshing(false);
-  };
+
 
   if (!user) return null;
 
@@ -874,7 +862,6 @@ const DisputePage = () => {
                 </div>
               </div>
             </div>
-            <RefreshButton onClick={handleRefresh} isLoading={isRefreshing} />
           </div>
 
           {/* Stats Cards */}
