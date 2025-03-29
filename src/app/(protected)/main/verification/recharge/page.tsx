@@ -403,8 +403,8 @@ const ScreenshotViewer: React.FC<ScreenshotViewerProps> = ({
           src={processedUrl || imageUrl}
           alt={alt}
           className={`rounded-lg object-contain w-full h-auto max-h-[300px] transition-all duration-300 ${isLoading || (hasError && retryCount >= maxRetries)
-              ? "opacity-0"
-              : "opacity-100"
+            ? "opacity-0"
+            : "opacity-100"
             } cursor-zoom-in`}
           onLoad={handleImageLoad}
           onError={handleImageError}
@@ -1353,7 +1353,7 @@ const VerificationRechargePage: React.FC = () => {
         const { data: redeemRequest, error: redeemFetchError } = await supabase
           .from("redeem_requests")
           .select(
-            "amount_hold, amount_paid, messenger_id,redeem_id, total_amount, game_platform"
+            "amount_hold, amount_paid, messenger_id,redeem_id, total_amount, game_platform, team_code"
           )
           .eq("id", redeemId)
           .single();
@@ -1397,15 +1397,15 @@ const VerificationRechargePage: React.FC = () => {
         // Send ManyChat message to the player
         try {
 
-          console.log("manychat message:", redeemRequest.messenger_id, selectedRequest.amount, redeemRequest.redeem_id, selectedRequest.gamePlatform, selectedRequest.teamCode);
+          console.log("manychat message:", redeemRequest.messenger_id, selectedRequest.amount, redeemRequest.redeem_id, selectedRequest.gamePlatform, redeemRequest.team_code);
           await sendManyChatMessage({
             subscriberId: redeemRequest.messenger_id,
             message: MANYCHAT_TEMPLATES.RECHARGE_VERIFICATION_WITH_REDEEM(
               selectedRequest.amount,
               redeemRequest.redeem_id,
-              selectedRequest.gamePlatform
+              redeemRequest.game_platform
             ),
-            teamCode: selectedRequest.teamCode,
+            teamCode: redeemRequest.team_code
           });
         } catch (manyChatError) {
           console.error("Failed to send ManyChat message:", manyChatError);
@@ -1592,7 +1592,7 @@ const VerificationRechargePage: React.FC = () => {
               <span className="text-3xl font-bold text-gray-500">Requests</span>
             </div>
             <div className="flex items-center gap-4">
-          
+
             </div>
           </div>
 
@@ -1614,14 +1614,14 @@ const VerificationRechargePage: React.FC = () => {
               ></div>
               <div
                 className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Pending"
-                    ? "opacity-100"
-                    : "opacity-0 group-hover:opacity-100"
+                  ? "opacity-100"
+                  : "opacity-0 group-hover:opacity-100"
                   }`}
               ></div>
               <div
                 className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Pending"
-                    ? "opacity-100"
-                    : "opacity-0 group-hover:opacity-100"
+                  ? "opacity-100"
+                  : "opacity-0 group-hover:opacity-100"
                   }`}
               ></div>
               <div className="relative">
@@ -1647,8 +1647,8 @@ const VerificationRechargePage: React.FC = () => {
                 </div>
                 <div
                   className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${activeTab === "Pending"
-                      ? "scale-105"
-                      : "group-hover:scale-105"
+                    ? "scale-105"
+                    : "group-hover:scale-105"
                     }`}
                 >
                   {pendingCount}
@@ -1673,14 +1673,14 @@ const VerificationRechargePage: React.FC = () => {
               ></div>
               <div
                 className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Processed"
-                    ? "opacity-100"
-                    : "opacity-0 group-hover:opacity-100"
+                  ? "opacity-100"
+                  : "opacity-0 group-hover:opacity-100"
                   }`}
               ></div>
               <div
                 className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Processed"
-                    ? "opacity-100"
-                    : "opacity-0 group-hover:opacity-100"
+                  ? "opacity-100"
+                  : "opacity-0 group-hover:opacity-100"
                   }`}
               ></div>
               <div className="relative">
@@ -1706,8 +1706,8 @@ const VerificationRechargePage: React.FC = () => {
                 </div>
                 <div
                   className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${activeTab === "Processed"
-                      ? "scale-105"
-                      : "group-hover:scale-105"
+                    ? "scale-105"
+                    : "group-hover:scale-105"
                     }`}
                 >
                   {processedCount}
@@ -1732,14 +1732,14 @@ const VerificationRechargePage: React.FC = () => {
               ></div>
               <div
                 className={`absolute inset-y-0 -left-px w-px bg-gradient-to-b from-transparent via-red-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Rejected"
-                    ? "opacity-100"
-                    : "opacity-0 group-hover:opacity-100"
+                  ? "opacity-100"
+                  : "opacity-0 group-hover:opacity-100"
                   }`}
               ></div>
               <div
                 className={`absolute inset-y-0 -right-px w-px bg-gradient-to-b from-transparent via-red-500/50 to-transparent transition-opacity duration-500 ${activeTab === "Rejected"
-                    ? "opacity-100"
-                    : "opacity-0 group-hover:opacity-100"
+                  ? "opacity-100"
+                  : "opacity-0 group-hover:opacity-100"
                   }`}
               ></div>
               <div className="relative">
@@ -1765,8 +1765,8 @@ const VerificationRechargePage: React.FC = () => {
                 </div>
                 <div
                   className={`text-3xl font-bold text-white mb-1 transition-transform duration-300 ${activeTab === "Rejected"
-                      ? "scale-105"
-                      : "group-hover:scale-105"
+                    ? "scale-105"
+                    : "group-hover:scale-105"
                     }`}
                 >
                   {rejectedCount}
@@ -1781,8 +1781,8 @@ const VerificationRechargePage: React.FC = () => {
             <button
               onClick={() => setActiveTeamCode("ALL")}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTeamCode === "ALL"
-                  ? "bg-blue-500/10 text-blue-500"
-                  : "text-gray-400 hover:text-white"
+                ? "bg-blue-500/10 text-blue-500"
+                : "text-gray-400 hover:text-white"
                 }`}
             >
               All Teams
@@ -1790,8 +1790,8 @@ const VerificationRechargePage: React.FC = () => {
             <button
               onClick={() => setActiveTeamCode("ENT-1")}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTeamCode === "ENT-1"
-                  ? "bg-purple-500/10 text-purple-500"
-                  : "text-gray-400 hover:text-white"
+                ? "bg-purple-500/10 text-purple-500"
+                : "text-gray-400 hover:text-white"
                 }`}
             >
               ENT-1
@@ -1799,8 +1799,8 @@ const VerificationRechargePage: React.FC = () => {
             <button
               onClick={() => setActiveTeamCode("ENT-2")}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTeamCode === "ENT-2"
-                  ? "bg-pink-500/10 text-pink-500"
-                  : "text-gray-400 hover:text-white"
+                ? "bg-pink-500/10 text-pink-500"
+                : "text-gray-400 hover:text-white"
                 }`}
             >
               ENT-2
@@ -1808,8 +1808,8 @@ const VerificationRechargePage: React.FC = () => {
             <button
               onClick={() => setActiveTeamCode("ENT-3")}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTeamCode === "ENT-3"
-                  ? "bg-indigo-500/10 text-indigo-500"
-                  : "text-gray-400 hover:text-white"
+                ? "bg-indigo-500/10 text-indigo-500"
+                : "text-gray-400 hover:text-white"
                 }`}
             >
               ENT-3
@@ -2045,11 +2045,11 @@ const VerificationRechargePage: React.FC = () => {
                                       : "Process request"
                                   }
                                   className={`px-3 py-1.5 text-xs font-medium ${request.rechargeId ===
-                                      selectedRequest?.rechargeId ||
-                                      request.processing_state?.status ===
-                                      "in_progress"
-                                      ? "bg-gray-500/10 text-gray-500 cursor-not-allowed"
-                                      : "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20"
+                                    selectedRequest?.rechargeId ||
+                                    request.processing_state?.status ===
+                                    "in_progress"
+                                    ? "bg-gray-500/10 text-gray-500 cursor-not-allowed"
+                                    : "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20"
                                     } rounded-lg transition-all duration-200`}
                                 >
                                   {request.processing_state?.status ===
@@ -2078,11 +2078,11 @@ const VerificationRechargePage: React.FC = () => {
                                       : "Process request"
                                   }
                                   className={`px-3 py-1.5 text-xs font-medium ${request.rechargeId ===
-                                      selectedRequest?.rechargeId ||
-                                      request.processing_state?.status ===
-                                      "in_progress"
-                                      ? "bg-gray-500/10 text-gray-500 cursor-not-allowed"
-                                      : "bg-red-500/10 text-red-500 hover:bg-red-500/20"
+                                    selectedRequest?.rechargeId ||
+                                    request.processing_state?.status ===
+                                    "in_progress"
+                                    ? "bg-gray-500/10 text-gray-500 cursor-not-allowed"
+                                    : "bg-red-500/10 text-red-500 hover:bg-red-500/20"
                                     } rounded-lg transition-all duration-200`}
                                 >
                                   {request.processing_state?.status ===
