@@ -1461,7 +1461,7 @@ const SubmitRequest = () => {
         </div>
       )}
 
-      {showSuccessModal.show && (
+      {/* {showSuccessModal.show && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-[#1a1a1a] rounded-2xl w-full max-w-sm border border-gray-800/20 shadow-lg">
             <div className="p-6 text-center">
@@ -1491,18 +1491,6 @@ const SubmitRequest = () => {
                 </p>
                 {showSuccessModal.data && (
                   <div className="mt-4 p-4 bg-[#252b3b] rounded-lg">
-                    {/* {showSuccessModal.type === 'recharge' && (
-                      <>
-                        <p className="text-sm text-gray-300">
-                          <span className="text-gray-400">Recharge ID:</span>{' '}
-                          <span className="font-medium text-blue-500">{showSuccessModal.data.id}</span>
-                        </p>
-                        <p className="text-sm text-gray-300">
-                          <span className="text-gray-400">Player:</span>{' '}
-                          <span className="font-medium text-white">{showSuccessModal.data.playerName}</span>
-                        </p>
-                      </>
-                    )} */}
                     {showSuccessModal.type === "redeem" && (
                       <>
                         <p className="text-sm text-gray-300">
@@ -1540,7 +1528,7 @@ const SubmitRequest = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

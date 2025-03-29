@@ -870,10 +870,9 @@ const FinanceRedeemPage = () => {
       )}
       <div className="flex-1 pl-64 overflow-hidden">
         <main className="p-8">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-screen">
-              <div className="text-white">Loading...</div>
-            </div>
+          {false ?
+           (
+            null
           ) : (
             <>
               <div className="flex items-center justify-between mb-8">
