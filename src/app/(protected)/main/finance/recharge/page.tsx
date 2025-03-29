@@ -3,7 +3,7 @@ import { useState, useEffect, Suspense, useMemo, useCallback } from "react";
 import { AdminHeader, FinanceHeader } from "@/app/components/Headers";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import RefreshButton from "@/app/components/RefreshButton";
+
 import { useFinanceRecharge } from "@/hooks/useFinanceRecharge";
 import { useActivityLogger } from "@/hooks/useActivityLogger";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -1963,9 +1963,7 @@ const QueueDashboard = () => {
                     Recharge Queue
                   </h1>
                 </div>
-                <div className="flex items-center gap-4">
-                  <RefreshButton onClick={fetchDeposits} isLoading={loading} />
-                </div>
+
               </div>
 
               {/* Tab Navigation */}
