@@ -73,7 +73,7 @@ export interface RedeemRequest {
   operation_by: {
     name: string;
     employee_code: string;
-  } | null; 
+  } | null;
   verified_by: {
     name: string;
     employee_code: string;
@@ -127,13 +127,13 @@ export const useFinanceRedeem = () => {
     // Parse processing_state if it's a string
     let processingState;
     try {
-      processingState = typeof data.processing_state === 'string' 
+      processingState = typeof data.processing_state === 'string'
         ? JSON.parse(data.processing_state)
         : data.processing_state || {
-            status: 'idle',
-            processed_by: null,
-            modal_type: 'none'
-          };
+          status: 'idle',
+          processed_by: null,
+          modal_type: 'none'
+        };
     } catch (e) {
       console.warn('Error parsing processing_state:', e);
       processingState = {
@@ -283,7 +283,7 @@ export const useFinanceRedeem = () => {
           },
           async (payload) => {
             console.log('Realtime update received:', payload);
-            
+
             // If it's an update, transform and update the local state immediately
             if (payload.eventType === 'UPDATE') {
               setRedeemRequests(prevRequests => {
@@ -295,12 +295,12 @@ export const useFinanceRedeem = () => {
                 return updatedRequests;
               });
             }
-            
+
             // Refresh full data
-            const status = activeTab === 'All' ? undefined : 
+            const status = activeTab === 'All' ? undefined :
               activeTab === 'Partially Paid' ? ['queued_partially_paid', 'paused_partially_paid'] :
-              activeTab.toLowerCase();
-            
+                activeTab.toLowerCase();
+
             await Promise.all([
               fetchRedeemRequests(status),
               fetchStats()
@@ -389,17 +389,17 @@ export const useFinanceRedeem = () => {
       const newAmountPaid = (currentRequest.amount_paid || 0) + amount;
       const newAmountHold = (currentRequest.amount_hold || 0) - amount;
       const newBalance = companyTag.balance - amount;
-      
+
       // Validate hold amount
       if (newAmountHold < 0) {
         throw new Error(`Cannot process more than the held amount. Current hold: $${currentRequest.amount_hold}`);
       }
 
       // Determine new status
-      const newStatus = newAmountPaid === currentRequest.total_amount 
-        ? 'completed' 
-        : newAmountPaid > 0 
-          ? 'queued_partially_paid' 
+      const newStatus = newAmountPaid === currentRequest.total_amount
+        ? 'completed'
+        : newAmountPaid > 0
+          ? 'queued_partially_paid'
           : 'queued';
 
       // Get the payment method details from the request
@@ -421,8 +421,8 @@ export const useFinanceRedeem = () => {
       };
 
       // Combine existing and new payment methods
-      const existingPaymentMethods = Array.isArray(currentRequest.payment_methods) 
-        ? currentRequest.payment_methods 
+      const existingPaymentMethods = Array.isArray(currentRequest.payment_methods)
+        ? currentRequest.payment_methods
         : [];
       const updatedPaymentMethods = [...existingPaymentMethods, newPaymentMethod];
 
@@ -538,6 +538,12 @@ export const useFinanceRedeem = () => {
   // Pause request function
   const pauseRequest = async (redeemId: string) => {
     try {
+
+      // Get user data from localStorage
+      const userData = localStorage.getItem('user');
+      const user = userData ? JSON.parse(userData) : null;
+
+
       const { error: updateError } = await supabase
         .from('redeem_requests')
         .update({
@@ -570,9 +576,18 @@ export const useFinanceRedeem = () => {
   // Resume request function
   const resumeRequest = async (redeemId: string) => {
     try {
+
+
+      // Get user data from localStorage
+      const userData = localStorage.getItem('user');
+      const user = userData ? JSON.parse(userData) : null;
+
+
       const { error: updateError } = await supabase
         .from('redeem_requests')
         .update({
+
+
           status: 'queued',
           processed_by: null,
           processed_at: new Date().toISOString(),
@@ -601,10 +616,10 @@ export const useFinanceRedeem = () => {
 
   // Initial data fetch
   useEffect(() => {
-    const status = activeTab === 'All' ? undefined : 
+    const status = activeTab === 'All' ? undefined :
       activeTab === 'Partially Paid' ? ['queued_partially_paid', 'paused_partially_paid'] :
-      activeTab.toLowerCase();
-    
+        activeTab.toLowerCase();
+
     fetchStats();
     fetchRedeemRequests(status);
   }, [activeTab, fetchRedeemRequests, fetchStats]);
@@ -616,7 +631,7 @@ export const useFinanceRedeem = () => {
     if (selectedRequest && user?.id) {
       try {
         console.log("[handleModalClose] Resetting processing state to idle");
-        
+
         // First update the processing state in the database
         const { error: updateError } = await supabase
           .from('redeem_requests')
