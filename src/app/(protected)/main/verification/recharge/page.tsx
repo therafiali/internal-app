@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { AdminHeader, VerificationHeader } from "@/app/components/Headers";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import RefreshButton from "@/app/components/RefreshButton";
+
 import { useActivityLogger } from "@/hooks/useActivityLogger";
 import { X, Loader2, Link } from "lucide-react";
 import AlertModal from "@/app/components/AlertModal";
@@ -1592,10 +1592,7 @@ const VerificationRechargePage: React.FC = () => {
               <span className="text-3xl font-bold text-gray-500">Requests</span>
             </div>
             <div className="flex items-center gap-4">
-              <RefreshButton
-                onClick={fetchRechargeRequests}
-                isLoading={isLoading}
-              />
+          
             </div>
           </div>
 
