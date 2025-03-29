@@ -458,8 +458,8 @@ const ProcessPaymentModal = ({
                 onPaste={(e) => e.preventDefault()}
                 type="text"
                 className={`w-full bg-[#252b3b] border border-gray-800 rounded-lg px-4 py-2 text-white focus:outline-none ${processText && processText.toLowerCase() !== "process"
-                    ? "border-red-500 focus:border-red-500"
-                    : "focus:border-blue-500"
+                  ? "border-red-500 focus:border-red-500"
+                  : "focus:border-blue-500"
                   }`}
                 value={processText}
                 onChange={(e) => setProcessText(e.target.value)}
@@ -574,8 +574,8 @@ const ProcessPaymentModal = ({
                   <input
                     type="number"
                     className={`w-full bg-[#252b3b] border ${totalAmount > request.amount_hold || totalAmount <= 0
-                        ? ""
-                        : "border-gray-800 focus:border-blue-500"
+                      ? ""
+                      : "border-gray-800 focus:border-blue-500"
                       } rounded-lg px-4 py-2 text-white focus:outline-none`}
                     value={totalAmount || ''}
                     onChange={(e) => {

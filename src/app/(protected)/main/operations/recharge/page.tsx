@@ -3,7 +3,6 @@ import { useState, useEffect, useCallback } from "react";
 import { AdminHeader, OperationsHeader } from "@/app/components/Headers";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import RefreshButton from "@/app/components/RefreshButton";
 
 import { useActivityLogger } from '@/hooks/useActivityLogger';
 import { supabase } from '@/lib/supabase';
@@ -80,19 +79,6 @@ interface RechargeRequest {
     status: 'idle' | 'in_progress';
     processed_by: string | null;
     modal_type: 'process_modal' | 'reject_modal' | 'approve_modal' | 'verify_modal' | 'payment_modal' | 'none';
-  };
-}
-
-interface ApiResponse {
-  success: boolean;
-  data: {
-    processedRecharges: RechargeRequest[];
-    pagination: {
-      total: number;
-      totalPages: number;
-      currentPage: number;
-      limit: number;
-    };
   };
 }
 
@@ -626,9 +612,7 @@ const OperationsRechargePage = () => {
               <h1 className="text-3xl font-bold text-white">Recharge</h1>
               <span className="text-3xl font-bold text-gray-500">Requests</span>
             </div>
-            <div className="flex items-center gap-4">
-              <RefreshButton onClick={() => fetchRechargeRequests()} isLoading={loading} />
-            </div>
+            
           </div>
 
           {/* Team Code Tabs */}
