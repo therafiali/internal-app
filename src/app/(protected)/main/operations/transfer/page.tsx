@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { OperationsHeader } from '@/app/components/Headers';
 import { AdminHeader } from '@/app/components/Headers';
-import RefreshButton from '@/app/components/RefreshButton';
 import Image from 'next/image';
 import { useActivityLogger } from '@/hooks/useActivityLogger';
 import { supabase } from '@/lib/supabase';
@@ -573,7 +572,7 @@ const Page = () => {
             <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
               Transfer Requests
             </h1>
-            <RefreshButton onClick={handleRefresh} isLoading={isRefreshing} />
+            
           </div>
 
           {/* Stats Cards */}
