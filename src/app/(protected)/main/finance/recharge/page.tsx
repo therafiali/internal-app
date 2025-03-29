@@ -583,17 +583,18 @@ const QueueDashboard = () => {
             vipcode: rechargeData.vip_code,
             player_image: rechargeData.profile_pic,
             player_payment_method: rechargePaymentType,
+            player_payment_username: rechargeData.payment_method[0]?.username,
             transaction: {
               status: "active",
               created_at: new Date().toISOString(),
               transaction_type: "p2p_assignment",
             },
             redeem_player: {
-              name: rechargeData.player_name,
-              image: rechargeData.profile_pic,
+              name: redeemResponse.data.player_name,
+              // image: redeemResponse.data.profile_pic,
               payment_method: {
-                platform: rechargePaymentType,
-                username: rechargeData.payment_method[0]?.username,
+                platform: redeemResponse.data.payment_methods[0]?.type,
+                username: redeemResponse.data.payment_methods[0]?.username,
               },
             },
             recharge_player: {
@@ -1953,11 +1954,6 @@ const QueueDashboard = () => {
     <ErrorBoundary fallback={<ErrorComponent />}>
       <Suspense fallback={<LoadingSpinner />}>
         <div className="flex min-h-screen bg-[#0a0a0a]">
-          {user.department === "Finance" ? (
-            <FinanceHeader user={user} />
-          ) : (
-            <AdminHeader user={user} />
-          )}
           <div className="flex-1 pl-64">
             <div className="p-8">
               {/* Header section */}
