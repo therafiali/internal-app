@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { AdminHeader, OperationsHeader } from "@/app/components/Headers";
 import ProcessModal from "@/app/components/ProcessModal";
 import RejectModal from "@/app/components/RejectModal";
-import RefreshButton from "@/app/components/RefreshButton";
+
 import Image from "next/image";
 import { useActivityLogger } from "@/hooks/useActivityLogger";
 import { useUserName } from "@/hooks/useUserName";
@@ -1313,10 +1313,7 @@ const OperationsRedeemPage = () => {
                 </div>
               </div>
             </div>
-            <RefreshButton
-              onClick={handleRefresh}
-              isLoading={isRefreshingRedeem || isRefreshingDisputed}
-            />
+      
           </div>
 
           {/* Stats Cards */}
