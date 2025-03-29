@@ -122,16 +122,16 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
     try {
       setIsDisputing(true);
       console.log("Attempting to dispute transaction:", rechargeRequest);
-      
+
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
       // Update the transaction status in Supabase
       const { data, error } = await supabase
         .from('recharge_requests')
-        .update({ 
+        .update({
           deposit_status: 'disputed',
-          disputed_by : {
+          disputed_by: {
             id: user.id,
             name: user.user_metadata.name,
             role: user.user_metadata.role,
@@ -166,7 +166,7 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-[#1a1a1a] text-white border border-gray-800 max-w-4xl max-h-[85vh] overflow-hidden flex flex-col">
-        <DialogHeader className="border-b border-gray-800 px-6 py-4 bg-gradient-to-r from-[#1a1a1a] to-[#2a2a2a]">
+        <DialogHeader className="border-b border-gray-800 px-6 py-4 my-2 mt-4 bg-gradient-to-r from-[#1a1a1a] to-[#2a2a2a]">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
               Recharge Request Details
@@ -175,19 +175,19 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
               <Badge className={`${getStatusColor(rechargeRequest.status)} px-3 py-1 text-sm font-medium border`}>
                 {rechargeRequest.status.toUpperCase()}
               </Badge>
-              {rechargeRequest.deposit_status !== 'disputed' && 
-               rechargeRequest.assignedRedeem &&
-               (!rechargeRequest.assign_ct?.tagType || rechargeRequest.assign_ct.tagType !== 'CT') && (
-                <button
-                  onClick={handleDispute}
-                  disabled={isDisputing}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <AlertTriangle size={16} />
-                  {isDisputing ? 'Disputing...' : 'Dispute'}
-                </button>
-              )}
-              <button
+              {rechargeRequest.deposit_status !== 'disputed' &&
+                rechargeRequest.assignedRedeem &&
+                (!rechargeRequest.assign_ct?.tagType || rechargeRequest.assign_ct.tagType !== 'CT') && (
+                  <button
+                    onClick={handleDispute}
+                    disabled={isDisputing}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <AlertTriangle size={16} />
+                    {isDisputing ? 'Disputing...' : 'Dispute'}
+                  </button>
+                )}
+              {/* <button
                 onClick={onClose}
                 className="p-1.5 rounded-lg hover:bg-white/10 transition-colors text-gray-400 hover:text-white"
               >
@@ -203,7 +203,7 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
                 >
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
-              </button>
+              </button> */}
             </div>
           </div>
         </DialogHeader>
@@ -245,8 +245,8 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
                   <div className="flex items-center gap-3">
                     <span className="font-medium">{rechargeRequest.playerName}</span>
                     {rechargeRequest.profile_pic && (
-                      <img 
-                        src={rechargeRequest.profile_pic} 
+                      <img
+                        src={rechargeRequest.profile_pic}
                         alt={rechargeRequest.playerName}
                         className="w-8 h-8 rounded-full object-cover border border-gray-700"
                       />
@@ -380,7 +380,7 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
                     {rechargeRequest.assignedRedeem.playerDetails.profile_pic && (
                       <div className="flex justify-between items-center py-2 border-b border-gray-800">
                         <span className="text-gray-400">Profile Picture</span>
-                        <img 
+                        <img
                           src={rechargeRequest.assignedRedeem.playerDetails.profile_pic}
                           alt={rechargeRequest.assignedRedeem.playerDetails.username}
                           className="w-10 h-10 rounded-full object-cover"
@@ -397,12 +397,12 @@ const TransactionDetailsModal: React.FC<TransactionDetailsModalProps> = ({
           {rechargeRequest.screenshotUrl && (
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-lg font-semibold text-gray-300">
-                <h3 className='flex items-center gap-2 '> <span> <ImageIcon color='yellow'/> </span> Payment Screenshot</h3>
+                <h3 className='flex items-center gap-2 '> <span> <ImageIcon color='yellow' /> </span> Payment Screenshot</h3>
               </div>
               <div className="relative group">
-                <img 
-                  src={rechargeRequest.screenshotUrl} 
-                  alt="Payment Screenshot" 
+                <img
+                  src={rechargeRequest.screenshotUrl}
+                  alt="Payment Screenshot"
                   className="w-full rounded-xl border border-gray-800 transition-transform duration-200 group-hover:scale-[1.02]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-xl" />

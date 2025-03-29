@@ -266,12 +266,12 @@ interface TransferRequest {
     status: "idle" | "in_progress";
     processed_by: string | null;
     modal_type:
-      | "process_modal"
-      | "reject_modal"
-      | "approve_modal"
-      | "verify_modal"
-      | "payment_modal"
-      | "none";
+    | "process_modal"
+    | "reject_modal"
+    | "approve_modal"
+    | "verify_modal"
+    | "payment_modal"
+    | "none";
   };
 }
 
@@ -602,9 +602,9 @@ const TransactionPage = () => {
               transaction.manychat_data?.profile?.profile_pic,
             processedBy: transaction.processed_by
               ? {
-                  name: "Unknown",
-                  email: "unknown@example.com",
-                }
+                name: "Unknown",
+                email: "unknown@example.com",
+              }
               : null,
             processedAt: transaction.updated_at,
             paymentMethod: transformedPaymentMethod,
@@ -612,20 +612,20 @@ const TransactionPage = () => {
               ? typeof transaction.assigned_redeem === "string"
                 ? JSON.parse(transaction.assigned_redeem)
                 : {
-                    ...transaction.assigned_redeem,
-                    playerDetails: transaction.assigned_redeem?.redeem_player
-                      ? {
-                          username:
-                            transaction.assigned_redeem.redeem_player.name,
-                          profile_pic:
-                            transaction.assigned_redeem.redeem_player.image,
-                          totalAmount: 0,
-                          amountPaid: 0,
-                          amountHold: 0,
-                          amountAvailable: 0,
-                        }
-                      : undefined,
-                  }
+                  ...transaction.assigned_redeem,
+                  playerDetails: transaction.assigned_redeem?.redeem_player
+                    ? {
+                      username:
+                        transaction.assigned_redeem.redeem_player.name,
+                      profile_pic:
+                        transaction.assigned_redeem.redeem_player.image,
+                      totalAmount: 0,
+                      amountPaid: 0,
+                      amountHold: 0,
+                      amountAvailable: 0,
+                    }
+                    : undefined,
+                }
               : null,
             vip_code: transaction.vip_code,
             assigned_ct: transaction.assigned_ct,
@@ -678,10 +678,10 @@ const TransactionPage = () => {
             processedAt: transaction.updated_at,
             processedBy: transaction.processed_by
               ? {
-                  _id: transaction.processed_by,
-                  email: "unknown@example.com",
-                  name: "Unknown",
-                }
+                _id: transaction.processed_by,
+                email: "unknown@example.com",
+                name: "Unknown",
+              }
               : undefined,
             team_code: transaction.team_code,
             vip_code: transaction.vip_code,
@@ -711,8 +711,8 @@ const TransactionPage = () => {
         typeof err === "string"
           ? err
           : err instanceof Error
-          ? err.message
-          : "An error occurred"
+            ? err.message
+            : "An error occurred"
       );
     } finally {
       setLoading(false);
@@ -877,8 +877,8 @@ const TransactionPage = () => {
         typeof error === "string"
           ? error
           : error instanceof Error
-          ? error.message
-          : "An error occurred"
+            ? error.message
+            : "An error occurred"
       );
     } finally {
       setRedeemLoading(false);
@@ -974,72 +974,68 @@ const TransactionPage = () => {
                       activeSection === "transactions"
                         ? "0"
                         : activeSection === "redeem"
-                        ? "140px"
-                        : activeSection === "reset-password"
-                        ? "280px"
-                        : "420px",
+                          ? "140px"
+                          : activeSection === "reset-password"
+                            ? "280px"
+                            : "420px",
                   }}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
                 <button
                   onClick={() => setActiveSection("transactions")}
-                  className={`relative py-2.5 text-sm font-medium z-10 flex-1 transition-colors ${
-                    activeSection === "transactions"
-                      ? "text-white"
-                      : "text-gray-400 hover:text-gray-300"
-                  }`}
+                  className={`relative py-2.5 text-sm font-medium z-10 flex-1 transition-colors ${activeSection === "transactions"
+                    ? "text-white"
+                    : "text-gray-400 hover:text-gray-300"
+                    }`}
                 >
                   Recharge
                 </button>
                 <button
                   onClick={() => setActiveSection("redeem")}
-                  className={`relative py-2.5 text-sm font-medium z-10 flex-1 transition-colors ${
-                    activeSection === "redeem"
-                      ? "text-white"
-                      : "text-gray-400 hover:text-gray-300"
-                  }`}
+                  className={`relative py-2.5 text-sm font-medium z-10 flex-1 transition-colors ${activeSection === "redeem"
+                    ? "text-white"
+                    : "text-gray-400 hover:text-gray-300"
+                    }`}
                 >
                   Redeem
                 </button>
                 <button
                   onClick={() => setActiveSection("reset-password")}
-                  className={`relative py-2.5 text-sm font-medium z-10 flex-1 transition-colors flex items-center justify-center gap-2 ${
-                    activeSection === "reset-password"
-                      ? "text-white"
-                      : "text-gray-400 hover:text-gray-300"
-                  }`}
+                  className={`relative py-2.5 text-sm font-medium z-10 flex-1 transition-colors flex items-center justify-center gap-2 ${activeSection === "reset-password"
+                    ? "text-white"
+                    : "text-gray-400 hover:text-gray-300"
+                    }`}
                 >
                   Reset Password
                   {resetRequests.filter(
                     (r) => r.status.toLowerCase() === "pending"
                   ).length > 0 && (
-                    <span className="bg-red-500 text-white px-1.5 py-0.5 rounded-full text-xs min-w-[20px]">
-                      {
-                        resetRequests.filter(
-                          (r) => r.status.toLowerCase() === "pending"
-                        ).length
-                      }
-                    </span>
-                  )}
+                      <span className="bg-red-500 text-white px-1.5 py-0.5 rounded-full text-xs min-w-[20px]">
+                        {
+                          resetRequests.filter(
+                            (r) => r.status.toLowerCase() === "pending"
+                          ).length
+                        }
+                      </span>
+                    )}
                 </button>
                 <button
                   onClick={() => setActiveSection("transfer")}
-                  className={`relative py-2.5 text-sm font-medium z-10 flex-1 transition-colors flex items-center justify-center gap-2 ${
-                    activeSection === "transfer"
-                      ? "text-white"
-                      : "text-gray-400 hover:text-gray-300"
-                  }`}
+                  className={`relative py-2.5 text-sm font-medium z-10 flex-1 transition-colors flex items-center justify-center gap-2 ${activeSection === "transfer"
+                    ? "text-white"
+                    : "text-gray-400 hover:text-gray-300"
+                    }`}
                 >
                   Transfer
                   {transferRequests.filter((r) => r.status === "pending")
                     .length > 0 && (
-                    <span className="bg-red-500 text-white px-1.5 py-0.5 rounded-full text-xs min-w-[20px]">
-                      {
-                        transferRequests.filter((r) => r.status === "pending")
-                          .length
-                      }
-                    </span>
-                  )}
+                      <span className="bg-red-500 text-white px-1.5 py-0.5 rounded-full text-xs min-w-[20px]">
+                        {
+                          transferRequests.filter((r) => r.status === "pending")
+                            .length
+                        }
+                      </span>
+                    )}
                 </button>
               </div>
             </div>
@@ -1088,10 +1084,9 @@ const TransactionPage = () => {
                       onClick={() => setSelectedEnt("ALL")}
                       className={`
                         whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm
-                        ${
-                          selectedEnt === "ALL"
-                            ? "border-emerald-500 text-emerald-500"
-                            : "border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300"
+                        ${selectedEnt === "ALL"
+                          ? "border-emerald-500 text-emerald-500"
+                          : "border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300"
                         }
                       `}
                     >
@@ -1103,10 +1098,9 @@ const TransactionPage = () => {
                         onClick={() => setSelectedEnt(ent)}
                         className={`
                           whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm
-                          ${
-                            selectedEnt === ent
-                              ? "border-blue-500 text-blue-500"
-                              : "border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300"
+                          ${selectedEnt === ent
+                            ? "border-blue-500 text-blue-500"
+                            : "border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300"
                           }
                         `}
                       >
@@ -1128,7 +1122,7 @@ const TransactionPage = () => {
                         <th className="text-center px-4 py-3 font-medium uppercase">
                           Init By
                         </th>
-                        <th className="text-center px-4 py-3 font-medium uppercase">
+                        <th className="text-center px-5 py-3 font-medium uppercase">
                           Team
                         </th>
                         <th className="text-center px-4 py-3 font-medium uppercase">
@@ -1207,13 +1201,15 @@ const TransactionPage = () => {
                           >
                             <td className="px-4 py-3 text-sm text-gray-300 capitalize text-center">
                               <span
-                                className={`px-2 py-1 rounded text-xs font-medium ${
-                                  request.initBy === "player"
-                                    ? "bg-blue-500/10 text-blue-500"
-                                    : "bg-purple-500/10 text-purple-500"
-                                }`}
+                                className={`px-2 py-1 rounded text-xs font-medium ${request.initBy === "player"
+                                  ? "bg-blue-500/10 text-blue-500"
+                                  : "bg-purple-500/10 text-purple-500"
+
+                                  }
+                                
+                                `}
                               >
-                                {request.initBy}
+                                {request.initBy === "player" ? "PLAYER" : "AGENT"}
                               </span>
                             </td>
                             <td className="px-2 py-3 text-center">
@@ -1299,12 +1295,12 @@ const TransactionPage = () => {
                                 <div className="flex items-center justify-center gap-2">
                                   {request.assignedRedeem.redeem_player
                                     ?.image && (
-                                    <PlayerImage
-                                      id={request.assignedRedeem.redeem_id}
-                                      width={35}
-                                      height={35}
-                                    />
-                                  )}
+                                      <PlayerImage
+                                        id={request.assignedRedeem.redeem_id}
+                                        width={35}
+                                        height={35}
+                                      />
+                                    )}
                                   <div className="flex flex-col items-center">
                                     <span className="text-gray-300">
                                       {
@@ -1324,35 +1320,35 @@ const TransactionPage = () => {
                                   <div className="flex items-center justify-center gap-2 h-full">
                                     {request.assignedRedeem.redeem_player
                                       ?.payment_method?.platform && (
-                                      <div className="flex items-center">
-                                        {getPaymentMethodIcon(
-                                          request.assignedRedeem.redeem_player
-                                            .payment_method.platform
-                                        ) ? (
-                                          <Image
-                                            src={getPaymentMethodIcon(
-                                              request.assignedRedeem
-                                                .redeem_player.payment_method
-                                                .platform
+                                        <div className="flex items-center">
+                                          {getPaymentMethodIcon(
+                                            request.assignedRedeem.redeem_player
+                                              .payment_method.platform
+                                          ) ? (
+                                            <Image
+                                              src={getPaymentMethodIcon(
+                                                request.assignedRedeem
+                                                  .redeem_player.payment_method
+                                                  .platform
+                                              )}
+                                              alt={
+                                                request.assignedRedeem
+                                                  .redeem_player.payment_method
+                                                  .platform
+                                              }
+                                              width={30}
+                                              height={30}
+                                              className="rounded"
+                                            />
+                                          ) : (
+                                            <span className="capitalize text-xs"></span>
+                                          )}
+                                          {request.assignedRedeem.redeem_player
+                                            .payment_method.username && (
+                                              <span className="text-gray-500 text-xs ml-1"></span>
                                             )}
-                                            alt={
-                                              request.assignedRedeem
-                                                .redeem_player.payment_method
-                                                .platform
-                                            }
-                                            width={30}
-                                            height={30}
-                                            className="rounded"
-                                          />
-                                        ) : (
-                                          <span className="capitalize text-xs"></span>
-                                        )}
-                                        {request.assignedRedeem.redeem_player
-                                          .payment_method.username && (
-                                          <span className="text-gray-500 text-xs ml-1"></span>
-                                        )}
-                                      </div>
-                                    )}
+                                        </div>
+                                      )}
                                   </div>
                                 ) : (
                                   (request.paymentMethod && (
@@ -1382,11 +1378,11 @@ const TransactionPage = () => {
                                 {request.status === "pending"
                                   ? "-"
                                   : request.assigned_ct
-                                  ? request.assigned_ct.cashtag
-                                  : request.assignedRedeem
-                                  ? request.assignedRedeem.redeem_player
-                                      ?.payment_method?.username || "-"
-                                  : "-"}
+                                    ? request.assigned_ct.cashtag
+                                    : request.assignedRedeem
+                                      ? request.assignedRedeem.redeem_player
+                                        ?.payment_method?.username || "-"
+                                      : "-"}
                               </div>
                             </td>
                             <td className="px-4 py-3 text-sm text-center">
@@ -1394,36 +1390,48 @@ const TransactionPage = () => {
                             </td>
                             <td className="px-4 py-3 text-center">
                               <span
-                                className={`px-2 py-1 rounded text-xs font-medium capitalize ${
-                                  request.deposit_status === "completed"
-                                    ? "bg-green-500/10 text-green-500"
-                                    : request.deposit_status === "pending"
+                                className={`px-2 py-1 rounded text-xs font-medium capitalize ${request.deposit_status === "completed"
+                                  ? "bg-green-500/10 text-green-500"
+                                  : request.deposit_status === "pending"
                                     ? "bg-yellow-500/10 text-yellow-500"
                                     : request.deposit_status === "disputed"
-                                    ? "bg-red-500/10 text-red-500"
-                                    : "bg-gray-500/10 text-gray-500"
-                                }`}
+                                      ? "bg-red-500/10 text-red-500"
+                                      : request.deposit_status === "paid"
+                                        ? "bg-blue-500/10 text-blue-500"
+                                        : request.deposit_status === "rejected"
+                                          ? "bg-orange-500/10 text-orange-500"
+                                          : request.deposit_status === "verified"
+                                            ? "bg-purple-500/10 text-purple-500"
+                                            : "bg-gray-500/10 text-gray-500"
+
+                                  }`}
                               >
                                 {request.deposit_status || "-"}
                               </span>
+
                             </td>
                             <td className="px-4 py-3 text-center">
                               <span
-                                className={`px-2 py-1 rounded text-xs font-medium uppercase ${
-                                  request.status === "completed"
-                                    ? "bg-green-500/10 text-green-500"
-                                    : request.status === "pending"
+                                className={`px-2 py-1 rounded text-xs font-medium uppercase ${request.status === "completed"
+                                  ? "bg-green-500/10 text-green-500"
+                                  : request.status === "pending"
                                     ? "bg-yellow-500/10 text-yellow-500"
                                     : request.status === "assigned"
-                                    ? "bg-blue-500/10 text-blue-500"
-                                    : request.status === "assigned_and_hold"
-                                    ? "bg-emerald-500/10 text-emerald-500"
-                                    : request.status === "cancelled"
-                                    ? "bg-red-500/10 text-red-500"
-                                    : request.status === "return"
-                                    ? "bg-teal-500/10 text-teal-500"
-                                    : "bg-gray-500/10 text-gray-500"
-                                }`}
+                                      ? "bg-blue-500/10 text-blue-500"
+                                      : request.status === "assigned_and_hold"
+                                        ? "bg-emerald-500/10 text-emerald-500"
+                                        : request.status === "cancelled"
+                                          ? "bg-red-500/10 text-red-500"
+                                          : request.status === "return"
+                                            ? "bg-teal-500/10 text-teal-500"
+                                            : request.status === "sc_processed"
+                                              ? "bg-blue-500/10 text-blue-500"
+                                              : request.status === "verified"
+                                                ? "bg-purple-500/10 text-purple-500"
+                                                : request.status === "sc_submitted"
+                                                  ? "bg-purple-500/10 text-purple-500"
+                                                  : "bg-gray-500/10 text-gray-500"
+                                  }`}
                               >
                                 {request.status === "assigned_and_hold"
                                   ? "Screenshot Submitted"
@@ -1514,13 +1522,12 @@ const TransactionPage = () => {
                             </TableCell>
                             <TableCell>
                               <Badge
-                                className={`${
-                                  request.status.toLowerCase() === "completed"
-                                    ? "bg-green-500/10 text-green-500"
-                                    : request.status.toLowerCase() === "pending"
+                                className={`${request.status.toLowerCase() === "completed"
+                                  ? "bg-green-500/10 text-green-500"
+                                  : request.status.toLowerCase() === "pending"
                                     ? "bg-yellow-500/10 text-yellow-500"
                                     : "bg-red-500/10 text-red-500"
-                                }`}
+                                  }`}
                               >
                                 {request.status}
                               </Badge>
@@ -1629,13 +1636,12 @@ const TransactionPage = () => {
                             </TableCell>
                             <TableCell>
                               <Badge
-                                className={`${
-                                  request.status === "completed"
-                                    ? "bg-green-500/10 text-green-500"
-                                    : request.status === "pending"
+                                className={`${request.status === "completed"
+                                  ? "bg-green-500/10 text-green-500"
+                                  : request.status === "pending"
                                     ? "bg-yellow-500/10 text-yellow-500"
                                     : "bg-red-500/10 text-red-500"
-                                }`}
+                                  }`}
                               >
                                 {request.status}
                               </Badge>
@@ -1811,11 +1817,10 @@ const TransactionPage = () => {
                               </td>
                               <td className="px-4 py-3 text-sm text-gray-300 capitalize text-center">
                                 <span
-                                  className={`px-2 py-1 rounded text-xs font-medium ${
-                                    request.initBy === "agent"
-                                      ? "bg-blue-500/10 text-blue-500"
-                                      : "bg-purple-500/10 text-purple-500"
-                                  }`}
+                                  className={`px-2 py-1 rounded text-xs font-medium ${request.initBy === "agent"
+                                    ? "bg-blue-500/10 text-blue-500"
+                                    : "bg-purple-500/10 text-purple-500"
+                                    }`}
                                 >
                                   {request.initBy}
                                 </span>
@@ -1841,25 +1846,33 @@ const TransactionPage = () => {
                               </td>
                               <td className="px-4 py-3 text-center">
                                 <span
-                                  className={`px-2 py-1 rounded text-xs font-medium ${
-                                    request.status === "completed"
-                                      ? "bg-green-500/10 text-green-500"
-                                      : request.status === "queued"
+                                  className={`px-2 py-1 rounded text-xs font-medium ${request.status === "completed"
+                                    ? "bg-green-500/10 text-green-500"
+                                    : request.status === "queued"
                                       ? "bg-yellow-500/10 text-yellow-500"
                                       : request.status === "rejected"
-                                      ? "bg-red-500/10 text-red-500"
-                                      : request.status === "verification_failed"
-                                      ? "bg-red-500/10 text-red-500"
-                                      : request.status === "initiated"
-                                      ? "bg-gray-500/10 text-gray-400"
-                                      : "bg-gray-500/10 text-gray-500"
-                                  }`}
+                                        ? "bg-red-500/10 text-red-500"
+                                        : request.status === "verification_failed"
+                                          ? "bg-red-500/10 text-red-500"
+                                          : request.status === "initiated"
+                                            ? "bg-gray-500/10 text-gray-400"
+                                            : request.status === "paused"
+                                              ? "bg-orange-500/10 text-orange-500"
+                                              : request.status === "queued_partially_paid"
+                                                ? "bg-purple-500/10 text-purple-500"
+                                                : request.status === "verification_pending"
+                                                  ? "bg-yellow-300/10 text-yellow-300"
+                                                  : request.status === "pending"
+                                                    ? "bg-yellow-500/10 text-yellow-500"
+                                                    : "bg-gray-500/10 text-gray-500"
+
+                                    }`}
                                 >
                                   {request.status === "verification_failed"
                                     ? "VERIFICATION FAILED"
                                     : request.status
-                                        .toUpperCase()
-                                        .replace(/_/g, " ")}
+                                      .toUpperCase()
+                                      .replace(/_/g, " ")}
                                 </span>
                               </td>
                               <td className="px-4 py-3 text-center">
@@ -1868,24 +1881,23 @@ const TransactionPage = () => {
                                     request.paymentMethods.map(
                                       (method, index) => (
                                         <div
-                                          key={`${method?._id || index}-${
-                                            request.redeemId
-                                          }`}
+                                          key={`${method?._id || index}-${request.redeemId
+                                            }`}
                                           className="flex items-center gap-1"
                                         >
                                           {getPaymentMethodIcon(
                                             method?.type || ""
                                           ) && (
-                                            <Image
-                                              src={getPaymentMethodIcon(
-                                                method?.type || ""
-                                              )}
-                                              alt={method?.type || ""}
-                                              width={30}
-                                              height={30}
-                                              className="rounded"
-                                            />
-                                          )}
+                                              <Image
+                                                src={getPaymentMethodIcon(
+                                                  method?.type || ""
+                                                )}
+                                                alt={method?.type || ""}
+                                                width={30}
+                                                height={30}
+                                                className="rounded"
+                                              />
+                                            )}
                                           <span className="text-gray-400 text-xs">
                                             {method?.username || "-"}
                                           </span>
@@ -1929,11 +1941,10 @@ const TransactionPage = () => {
                       <button
                         onClick={() => setCurrentPage(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className={`px-3 py-1 rounded text-sm ${
-                          currentPage === 1
-                            ? "bg-gray-800/50 text-gray-600 cursor-not-allowed"
-                            : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                        }`}
+                        className={`px-3 py-1 rounded text-sm ${currentPage === 1
+                          ? "bg-gray-800/50 text-gray-600 cursor-not-allowed"
+                          : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                          }`}
                       >
                         Previous
                       </button>
@@ -1943,11 +1954,10 @@ const TransactionPage = () => {
                       <button
                         onClick={() => setCurrentPage(currentPage + 1)}
                         disabled={currentPage === redeemPagination.totalPages}
-                        className={`px-3 py-1 rounded text-sm ${
-                          currentPage === redeemPagination.totalPages
-                            ? "bg-gray-800/50 text-gray-600 cursor-not-allowed"
-                            : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                        }`}
+                        className={`px-3 py-1 rounded text-sm ${currentPage === redeemPagination.totalPages
+                          ? "bg-gray-800/50 text-gray-600 cursor-not-allowed"
+                          : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                          }`}
                       >
                         Next
                       </button>
@@ -1968,11 +1978,10 @@ const TransactionPage = () => {
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className={`px-3 py-1 rounded text-sm ${
-                      currentPage === 1
-                        ? "bg-gray-800/50 text-gray-600 cursor-not-allowed"
-                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                    }`}
+                    className={`px-3 py-1 rounded text-sm ${currentPage === 1
+                      ? "bg-gray-800/50 text-gray-600 cursor-not-allowed"
+                      : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                      }`}
                   >
                     Previous
                   </button>
@@ -1982,11 +1991,10 @@ const TransactionPage = () => {
                   <button
                     onClick={() => setCurrentPage(currentPage + 1)}
                     disabled={currentPage === pagination.totalPages}
-                    className={`px-3 py-1 rounded text-sm ${
-                      currentPage === pagination.totalPages
-                        ? "bg-gray-800/50 text-gray-600 cursor-not-allowed"
-                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-                    }`}
+                    className={`px-3 py-1 rounded text-sm ${currentPage === pagination.totalPages
+                      ? "bg-gray-800/50 text-gray-600 cursor-not-allowed"
+                      : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                      }`}
                   >
                     Next
                   </button>
@@ -2079,9 +2087,8 @@ const TransactionPage = () => {
                     selectedRedeemRequest.paymentMethods.map(
                       (method, index) => (
                         <div
-                          key={`${method?._id || index}-${
-                            selectedRedeemRequest.redeemId
-                          }`}
+                          key={`${method?._id || index}-${selectedRedeemRequest.redeemId
+                            }`}
                           className="bg-black/20 p-3 rounded"
                         >
                           <p className="text-white capitalize">
@@ -2099,21 +2106,20 @@ const TransactionPage = () => {
               <div>
                 <p className="text-gray-400 text-sm">Status</p>
                 <span
-                  className={`px-2 py-1 rounded text-xs font-medium ${
-                    selectedRedeemRequest.status === "completed"
-                      ? "bg-green-500/10 text-green-500"
-                      : selectedRedeemRequest.status === "queued"
+                  className={`px-2 py-1 rounded text-xs font-medium ${selectedRedeemRequest.status === "completed"
+                    ? "bg-green-500/10 text-green-500"
+                    : selectedRedeemRequest.status === "queued"
                       ? "bg-yellow-500/10 text-yellow-500"
                       : selectedRedeemRequest.status === "rejected"
-                      ? "bg-red-500/10 text-red-500"
-                      : "bg-gray-500/10 text-gray-500"
-                  }`}
+                        ? "bg-red-500/10 text-red-500"
+                        : "bg-gray-500/10 text-gray-500"
+                    }`}
                 >
                   {selectedRedeemRequest.status === "verification_failed"
                     ? "VERIFICATION FAILED"
                     : selectedRedeemRequest.status
-                        .toUpperCase()
-                        .replace(/_/g, " ")}
+                      .toUpperCase()
+                      .replace(/_/g, " ")}
                 </span>
               </div>
 
