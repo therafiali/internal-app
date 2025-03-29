@@ -46,8 +46,8 @@ const ProcessPaymentModal = ({
     message: string;
   }>({ isOpen: false, type: 'success', message: '' });
 
-  console.log("request",request.amount_available);
-  console.log("totalAmount",totalAmount);
+  console.log("request", request.amount_available);
+  console.log("totalAmount", totalAmount);
   useEffect(() => {
     console.log("[ProcessPaymentModal] isOpen changed:", isOpen);
     if (!isOpen) return;
@@ -104,8 +104,8 @@ const ProcessPaymentModal = ({
     return null;
   }
 
-  console.log("request.paymentMethods",request.paymentMethods);
-  console.log("paymentMethod",paymentMethod);
+  console.log("request.paymentMethods", request.paymentMethods);
+  console.log("paymentMethod", paymentMethod);
 
 
   const handleStage1Next = () => {
@@ -133,7 +133,7 @@ const ProcessPaymentModal = ({
 
   const handleStage2Next = () => {
     console.log("[Stage2Next] Validating:", { selectedCashtag, paymentMethod, identifier });
-    
+
     if (!selectedCashtag) {
       setAlertModal({
         isOpen: true,
@@ -155,7 +155,7 @@ const ProcessPaymentModal = ({
     setShowConfirmation(true);
   };
 
-  console.log("selectedCashtag",request.redeemId,selectedCashtag,totalAmount );
+  console.log("selectedCashtag", request.redeemId, selectedCashtag, totalAmount);
   const handleProcessPayment = async () => {
     console.log("[handleProcessPayment] Starting process payment", {
       redeemId: request.redeemId,
@@ -217,7 +217,7 @@ const ProcessPaymentModal = ({
 
       // Call the onProcess callback with the payment details
       await onProcess(totalAmount, selectedCashtag, reference, notes, identifier);
-      
+
       setAlertModal({
         isOpen: true,
         type: 'success',
@@ -257,7 +257,7 @@ const ProcessPaymentModal = ({
       available: request.amount_available,
       processing_state: request.processing_state
     });
-    
+
     try {
       setIsHoldLoading(true);
 
@@ -287,7 +287,7 @@ const ProcessPaymentModal = ({
         });
         return;
       }
-      
+
       // Update the redeem request with hold amount
       console.log("[handleHoldToPayClick] Updating redeem request with hold amount");
       const { data, error } = await supabase
@@ -326,7 +326,7 @@ const ProcessPaymentModal = ({
 
       console.log("[handleHoldToPayClick] Hold added successfully", data);
       console.log("[handleHoldToPayClick] Moving to next stage");
-      
+
       // If successful, move to next stage
       setStage(2);
     } catch (error) {
@@ -344,7 +344,7 @@ const ProcessPaymentModal = ({
   const handleCancel = async () => {
     try {
       setIsRemoveHoldLoading(true);
-      
+
       // Update processing state and remove hold if in stage 2
       const updateData: any = {
         processing_state: {
@@ -457,11 +457,10 @@ const ProcessPaymentModal = ({
               <input
                 onPaste={(e) => e.preventDefault()}
                 type="text"
-                className={`w-full bg-[#252b3b] border border-gray-800 rounded-lg px-4 py-2 text-white focus:outline-none ${
-                  processText && processText.toLowerCase() !== "process"
+                className={`w-full bg-[#252b3b] border border-gray-800 rounded-lg px-4 py-2 text-white focus:outline-none ${processText && processText.toLowerCase() !== "process"
                     ? "border-red-500 focus:border-red-500"
                     : "focus:border-blue-500"
-                }`}
+                  }`}
                 value={processText}
                 onChange={(e) => setProcessText(e.target.value)}
                 placeholder='Type "process" to enable confirmation...'
@@ -474,14 +473,14 @@ const ProcessPaymentModal = ({
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 p-6 border-t border-gray-800">
-            {/* <button
-              onClick={() => setShowConfirmation(false)}
+          <div className="flex justify-between gap-3 p-6 border-t border-gray-800">
+            <button
+              onClick={handleCancel}
               disabled={isProcessing}
-              className="px-4 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-gray-400 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Back
-            </button> */}
+              Cancel
+            </button>
             <button
               onClick={handleProcessPayment}
               disabled={processText.toLowerCase() !== "process" || isProcessing}
@@ -574,11 +573,10 @@ const ProcessPaymentModal = ({
                   </label>
                   <input
                     type="number"
-                    className={`w-full bg-[#252b3b] border ${
-                      totalAmount > request.amount_hold || totalAmount <= 0
+                    className={`w-full bg-[#252b3b] border ${totalAmount > request.amount_hold || totalAmount <= 0
                         ? ""
                         : "border-gray-800 focus:border-blue-500"
-                    } rounded-lg px-4 py-2 text-white focus:outline-none`}
+                      } rounded-lg px-4 py-2 text-white focus:outline-none`}
                     value={totalAmount || ''}
                     onChange={(e) => {
                       const value = e.target.value;
@@ -595,7 +593,7 @@ const ProcessPaymentModal = ({
                     step="0.01"
                     placeholder="Enter amount to process"
                   />
-                 
+
                 </div>
               </>
             ) : (
@@ -621,10 +619,10 @@ const ProcessPaymentModal = ({
                   >
                     <option value="">Select a cashtag</option>
                     {activeCashtags
-                      .filter(tag => 
-                        tag.status === 'active' && 
-                        // Only show cashtags that match the payment method
-                        tag.payment_method === request.paymentMethods[0].type
+                      .filter(tag =>
+                        tag.status === 'active' &&
+                        tag.payment_method === request.paymentMethods[0].type &&
+                        tag.balance >= request.amount_available
                       )
                       .map((tag) => (
                         <option key={tag.id} value={tag.cashtag}>
@@ -728,7 +726,7 @@ const ProcessPaymentModal = ({
           </div>
         </div>
       </div>
-      
+
       <AlertModal
         isOpen={alertModal.isOpen}
         onClose={() => {

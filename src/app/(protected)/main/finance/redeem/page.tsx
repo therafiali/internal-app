@@ -869,6 +869,7 @@ const FinanceRedeemPage = () => {
         />
       )}
       <div className="flex-1 pl-64 overflow-hidden">
+        {/* add loading state */}
         <main className="p-8">
           {false ?
            (
