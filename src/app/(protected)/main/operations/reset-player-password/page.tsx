@@ -1,10 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 import { AdminHeader, OperationsHeader } from "@/app/components/Headers";
-import RefreshButton from "@/app/components/RefreshButton";
-import Loader from "@/app/components/Loader";
 import Image from "next/image";
 import { useActivityLogger } from '@/hooks/useActivityLogger';
 import { supabase } from "@/supabase/client";
@@ -426,9 +423,7 @@ const OperationsResetPlayerPasswordPage = () => {
             <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
               Reset Password Requests
             </h1>
-            <div className="flex items-center gap-4">
-              <RefreshButton onClick={fetchRequests} isLoading={loading} />
-            </div>
+
           </div>
 
           {/* Stats Cards */}
