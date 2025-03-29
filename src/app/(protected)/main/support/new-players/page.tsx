@@ -242,8 +242,8 @@ const usePlayerRequests = (initialPage: number): UsePlayerRequestsReturn => {
       }
 
       if (data) {
-        console.log('Successfully fetched players:', { 
-          count, 
+        console.log('Successfully fetched players:', {
+          count,
           dataLength: data.length,
           firstItem: data[0]
         });
@@ -406,7 +406,7 @@ const NewPlayersPage = () => {
     try {
       // Determine ENT based on team code
       let ent: 'ENT1' | 'ENT2' | 'ENT3';
-      
+
       // Map specific team codes to ENT options
       switch (teamCode) {
         case 'ENT-1':
@@ -515,7 +515,7 @@ const NewPlayersPage = () => {
             currentPlayer.manychat_data.id,
             'WELCOME_FLOW',
             currentPlayer.manychat_data.custom_fields.team_code
-          ) 
+          )
 
         } catch (manyChatError) {
           console.error('Error sending ManyChat message:', manyChatError);
@@ -547,7 +547,7 @@ const NewPlayersPage = () => {
       // Update the player's status in pending_players table
       const { data: updateData, error: updateError } = await supabase
         .from('pending_players')
-        .update({ 
+        .update({
           registration_status: status,
           processed_by: user?.id || null,
           processed_at: new Date().toISOString()
@@ -578,8 +578,8 @@ const NewPlayersPage = () => {
       setNotification({
         show: true,
         type: 'error',
-        message: error instanceof Error ? error.message : 
-                 "An error occurred while updating player status. Please try again or contact support."
+        message: error instanceof Error ? error.message :
+          "An error occurred while updating player status. Please try again or contact support."
       });
 
       throw error;
@@ -626,7 +626,7 @@ const NewPlayersPage = () => {
                 {notification.type === 'success' ? 'Success' : notification.type === 'warning' ? 'Warning' : 'Error'}
               </h3>
             </div>
-            <button 
+            <button
               onClick={() => setNotification(prev => ({ ...prev, show: false }))}
               className="text-gray-400 hover:text-white"
             >
@@ -637,13 +637,12 @@ const NewPlayersPage = () => {
           <div className="mt-6 flex justify-end">
             <button
               onClick={() => setNotification(prev => ({ ...prev, show: false }))}
-              className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                notification.type === 'success' 
+              className={`px-4 py-2 rounded-lg text-sm font-medium ${notification.type === 'success'
                   ? 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20'
                   : notification.type === 'warning'
                     ? 'bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20'
                     : 'bg-red-500/10 text-red-500 hover:bg-red-500/20'
-              }`}
+                }`}
             >
               Close
             </button>
@@ -657,11 +656,6 @@ const NewPlayersPage = () => {
 
   return (
     <div className="flex min-h-screen bg-[#0a0a0a]">
-        {user.department === "Support" ? (
-        <SupportHeader user={user} />
-      ) : (
-        <AdminHeader user={user} />
-      )}
       <div className="flex-1 pl-64">
         <main className="p-8">
           {/* Header */}
@@ -714,11 +708,10 @@ const NewPlayersPage = () => {
           {/* Replace the old tabs section */}
           <div className="grid grid-cols-3 gap-6 mb-8">
             {/* Pending Card */}
-            <div 
+            <div
               onClick={() => setActiveTab("pending")}
-              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${
-                activeTab === "pending" ? 'scale-105 before:opacity-100' : ''
-              } before:absolute before:inset-0 before:bg-gradient-to-b before:from-amber-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
+              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${activeTab === "pending" ? 'scale-105 before:opacity-100' : ''
+                } before:absolute before:inset-0 before:bg-gradient-to-b before:from-amber-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
             >
               <div className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent ${activeTab === "pending" ? 'opacity-100' : ''}`}></div>
               <div className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-amber-500/10 to-transparent ${activeTab === "pending" ? 'opacity-100' : ''}`}></div>
@@ -741,7 +734,7 @@ const NewPlayersPage = () => {
             </div>
 
             {/* Approved Card */}
-            <div 
+            {/* <div 
               onClick={() => setActiveTab("approved")}
               className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${
                 activeTab === "approved" ? 'scale-105 before:opacity-100' : ''
@@ -765,14 +758,13 @@ const NewPlayersPage = () => {
                 </div>
                 <div className="text-sm text-gray-400 mb-4">Requests</div>
               </div>
-            </div>
+            </div> */}
 
             {/* Rejected Card */}
-            <div 
+            <div
               onClick={() => setActiveTab("rejected")}
-              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${
-                activeTab === "rejected" ? 'scale-105 before:opacity-100' : ''
-              } before:absolute before:inset-0 before:bg-gradient-to-b before:from-red-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
+              className={`relative bg-[#1a1a1a] rounded-2xl p-6 cursor-pointer transform transition-all duration-200 hover:scale-105 ${activeTab === "rejected" ? 'scale-105 before:opacity-100' : ''
+                } before:absolute before:inset-0 before:bg-gradient-to-b before:from-red-500/20 before:to-transparent before:rounded-2xl before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500 group`}
             >
               <div className={`absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent ${activeTab === "rejected" ? 'opacity-100' : ''}`}></div>
               <div className={`absolute inset-x-0 -bottom-px h-px bg-gradient-to-r from-transparent via-red-500/10 to-transparent ${activeTab === "rejected" ? 'opacity-100' : ''}`}></div>
@@ -833,167 +825,167 @@ const NewPlayersPage = () => {
                     {players
                       .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
                       .map((player) => (
-                      <tr key={player.id} className="hover:bg-[#252b3b]">
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <div className="flex flex-col">
-                            {(() => {
-                              const { timeString, colorClass } = getTimeElapsed(player.created_at);
-                              return (
-                                <>
-                                  <span className={`text-xs font-medium ${colorClass}`}>
-                                    {timeString}
-                                  </span>
-                                  <span className="text-sm text-gray-300">
-                                    {new Date(player.created_at).toLocaleDateString()}
-                                  </span>
-                                </>
-                              );
-                            })()}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 overflow-hidden">
-                              {player.manychat_data.profile_pic ? (
-                                <Image
-                                  src={player.manychat_data.profile_pic}
-                                  alt={player.manychat_data.name || "Player"}
-                                  width={32}
-                                  height={32}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : player.manychat_data.first_name ? (
-                                player.manychat_data.first_name.charAt(0)
-                              ) : (
-                                "?"
-                              )}
+                        <tr key={player.id} className="hover:bg-[#252b3b]">
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <div className="flex flex-col">
+                              {(() => {
+                                const { timeString, colorClass } = getTimeElapsed(player.created_at);
+                                return (
+                                  <>
+                                    <span className={`text-xs font-medium ${colorClass}`}>
+                                      {timeString}
+                                    </span>
+                                    <span className="text-sm text-gray-300">
+                                      {new Date(player.created_at).toLocaleDateString()}
+                                    </span>
+                                  </>
+                                );
+                              })()}
                             </div>
-                            <span className="ml-2 text-sm text-gray-300">
-                              {player.manychat_data.name || "Unknown Player"}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
-                          {player.manychat_data.custom_fields.team_code || "N/A"}
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 overflow-hidden">
-                              {player.referred_by?.profile?.profile_pic ? (
-                                <Image
-                                  src={player.referred_by.profile.profile_pic}
-                                  alt={player.referred_by.player_name || "Referrer"}
-                                  width={32}
-                                  height={32}
-                                  className="w-full h-full object-cover"
-                                />
-                              ) : (
-                                <span>
-                                  {player.referred_by?.player_name?.charAt(0) || "?"}
-                                </span>
-                              )}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 overflow-hidden">
+                                {player.manychat_data.profile_pic ? (
+                                  <Image
+                                    src={player.manychat_data.profile_pic}
+                                    alt={player.manychat_data.name || "Player"}
+                                    width={32}
+                                    height={32}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : player.manychat_data.first_name ? (
+                                  player.manychat_data.first_name.charAt(0)
+                                ) : (
+                                  "?"
+                                )}
+                              </div>
+                              <span className="ml-2 text-sm text-gray-300">
+                                {player.manychat_data.name || "Unknown Player"}
+                              </span>
                             </div>
-                            <span className="ml-2 text-sm text-gray-300">
-                              {player.referred_by?.player_name || "No Referrer"}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 whitespace-nowrap">
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => handleAction(player.id, "approved")}
-                              disabled={
-                                actionLoading?.id === player.id ||
-                                player.registration_status !== "pending"
-                              }
-                              className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {actionLoading?.id === player.id &&
-                              actionLoading.action === "approved" ? (
-                                <svg
-                                  className="w-4 h-4 animate-spin"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <circle
-                                    className="opacity-25"
-                                    cx="12"
-                                    cy="12"
-                                    r="10"
-                                    stroke="currentColor"
-                                    strokeWidth="4"
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
+                            {player.manychat_data.custom_fields.team_code || "N/A"}
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 overflow-hidden">
+                                {player.referred_by?.profile?.profile_pic ? (
+                                  <Image
+                                    src={player.referred_by.profile.profile_pic}
+                                    alt={player.referred_by.player_name || "Referrer"}
+                                    width={32}
+                                    height={32}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <span>
+                                    {player.referred_by?.player_name?.charAt(0) || "?"}
+                                  </span>
+                                )}
+                              </div>
+                              <span className="ml-2 text-sm text-gray-300">
+                                {player.referred_by?.player_name || "No Referrer"}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => handleAction(player.id, "approved")}
+                                disabled={
+                                  actionLoading?.id === player.id ||
+                                  player.registration_status !== "pending"
+                                }
+                                className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {actionLoading?.id === player.id &&
+                                  actionLoading.action === "approved" ? (
+                                  <svg
+                                    className="w-4 h-4 animate-spin"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                      fill="none"
+                                    />
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    />
+                                  </svg>
+                                ) : (
+                                  <svg
+                                    className="w-4 h-4"
                                     fill="none"
-                                  />
-                                  <path
-                                    className="opacity-75"
-                                    fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                  />
-                                </svg>
-                              ) : (
-                                <svg
-                                  className="w-4 h-4"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M5 13l4 4L19 7"
-                                  />
-                                </svg>
-                              )}
-                            </button>
-                            <button
-                              onClick={() => handleAction(player.id, "rejected")}
-                              disabled={
-                                actionLoading?.id === player.id ||
-                                player.registration_status !== "pending"
-                              }
-                              className="p-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {actionLoading?.id === player.id &&
-                              actionLoading.action === "rejected" ? (
-                                <svg
-                                  className="w-4 h-4 animate-spin"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <circle
-                                    className="opacity-25"
-                                    cx="12"
-                                    cy="12"
-                                    r="10"
                                     stroke="currentColor"
-                                    strokeWidth="4"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M5 13l4 4L19 7"
+                                    />
+                                  </svg>
+                                )}
+                              </button>
+                              <button
+                                onClick={() => handleAction(player.id, "rejected")}
+                                disabled={
+                                  actionLoading?.id === player.id ||
+                                  player.registration_status !== "pending"
+                                }
+                                className="p-1.5 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {actionLoading?.id === player.id &&
+                                  actionLoading.action === "rejected" ? (
+                                  <svg
+                                    className="w-4 h-4 animate-spin"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                      fill="none"
+                                    />
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    />
+                                  </svg>
+                                ) : (
+                                  <svg
+                                    className="w-4 h-4"
                                     fill="none"
-                                  />
-                                  <path
-                                    className="opacity-75"
-                                    fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                  />
-                                </svg>
-                              ) : (
-                                <svg
-                                  className="w-4 h-4"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M6 18L18 6M6 6l12 12"
-                                  />
-                                </svg>
-                              )}
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M6 18L18 6M6 6l12 12"
+                                    />
+                                  </svg>
+                                )}
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>
